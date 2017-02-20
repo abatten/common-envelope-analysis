@@ -41,5 +41,3 @@ use_smoothed_potential:1
 
 #### Smoothing length in number of cells (only used if "use_smoothed_potential = 1")
 smoothing_length:3.0
-
-
