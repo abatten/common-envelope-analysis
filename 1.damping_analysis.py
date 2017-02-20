@@ -7,7 +7,7 @@ The script can generate a number of plots as listed below.
 To run this script you specify the plots by adding them as 
 arguments when calling the python script. 
 
->>> python <file_name> 0,9,10
+>>> python <file_name> <path/to/inlist> 0,9,10
 
 Set root_dir to the directory where the data files are stored.
 Set plot_sir to where you want the plots to be saved.
@@ -36,41 +36,15 @@ import numpy as np
 import math
 import os
 import sys
+import ConfigParser
 
 from index2str import index2str
 from rootsort import root_sort
-################################################################################
-################################# User Controls ################################
-################################################################################
-
-global_storage = False # If the data from all the directories is to be stored 
-
-# The path where the data directories are stored. 
-# NOTE: root_dir should only contain output directories
-root_dir = "/disks/ceres/makemake/acomp/jstaff/raijin/enzoamr-2.3/1Moz0.02late-2/128/4levels/2part/run210Mj/"
-
-# The directories in root_dir to exclude from the analysis.
-exclude_dir = ['1part']
-
-# The path where the plots will be written. Ensure it ends with a /
-plot_dir  = "/disks/ceres/makemake/acomp/abatten/jstaff/sim2/plots/"
-
-# Number to start counding from in path.
-initial_path = 28 # Usually start with zero.
-
-# The number of directories to be analysed. 
-# Plus one to match with python range functions
-final_path_plus_one = 29
-
-################################################################################
-################################################################################
-################################################################################
 
 ########################### CONSTANTS FOR CONVERSIONS ##########################
 
 length_unit = 6.955*10**10 # 1 Rsun in cm
 length_unit_km = 1.0*10**5 # 1 km in cm
-
 
 # system_radius = 3.0e13 # 2 AU in cm
 system_radius = 6.0e13 # 4 AU in cm
@@ -275,11 +249,42 @@ plot_functions = [ ["Density vs Radius", density_vs_radius],
                    ["Gravitational Potential Slice aling Z-axis", grav_potential_slice_along_z] ]
 
 ################################################################################
+def read_inlist(ipath):
+	"""
+	Reads the contents of the inlist file and returns the values of 
+	the appropriate variables. Returns the values in the following order:
+	root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one, global_storage
+	"""
+	print(" ")
+        print("<-------------->")
+        print("READING INLIST FILE")
+        print("<-------------->")
+	inlist_name = ipath.split('/')[-1]
+	config = ConfigParser.ConfigParser()
+	config.readfp(open(inlist_name, 'r'))
+
+	global_storage = config.getboolean('Damping Analysis Section', 'global_storage')
+	root_dir = config.get('Common Section', 'root_dir')
+	exclude_dir = config.get('Common Section', 'exclude_dir').split(',')
+	plot_dir = config.get('Common Section', 'plot_dir')
+	initial_path = config.getint('Common Section', 'initial_path')
+	final_path_plus_one = config.getint('Common Section', 'final_path_plus_one')
+
+        print("INLIST FILE: " + inlist_name)
+	print("ROOT DIRECTORY: " + str(root_dir))
+	print("EXCLUDING DIRECTORIES: " + str(exclude_dir))
+	print("OUTPUT DIRECTORY: " + str(plot_dir))
+	print("INITIAL PATH: " + str(initial_path))
+	print("FINAL PATH PLUS ONE: " + str(final_path_plus_one))
+        print("GLOBAL STORAGE: " + str(global_storage))
+
+
+	return root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one, global_storage 
 
 def args2plots():
-        if len(sys.argv) >= 2: # If the user specifies an aditional argument
+        if len(sys.argv) >= 3: # If the user specifies an aditional argument
 	 # Map that argument to the plot_vector.
-		plot_vector = map(int, sys.argv[1].split(","))
+		plot_vector = map(int, sys.argv[2].split(","))
 		print(" ")
 	        print("<-------------->")
 		print("PLOTS TO BE CREATED ")
@@ -327,23 +332,14 @@ def read_data(input_directory, index):
 ################################################################################
 
 if __name__ == "__main__":
-	# If a root directory isn't defined, ask user for the location
-	if "root_dir" not in globals():
-        	root_dir = raw_input("Path to root directory: \n")
-        
-	# If a plot directory isn't defined, ask user for the location
-        if "plot_dir" not in globals():
-                plot_dir = raw_input("Path to plot directory: \n")
 
-	if "global_storage" not in globals():
-		global_storage = False
-	
+	# Read the inlist file and return the values of the variables.
+	if len(sys.argv) >= 2:
+		inlist_path = sys.argv[1]
+		root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one, global_storage = read_inlist(inlist_path)
+
 	root_dir_list = root_sort(root_dir, exclude=exclude_dir)
  	plot_vector = args2plots()
-
-        # If a the final path length isn't defined, ask user for the number
-	if "final_path_plus_one" not in globals():
-		final_path_plus_one = input("Number of data directories in root: \n")
 
 	# Read all the directories in root and produce the plots.
 	for index in range(initial_path, final_path_plus_one):

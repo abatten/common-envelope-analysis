@@ -1,0 +1,45 @@
+[Common Section]
+
+#### The path where the data directories are stored.
+#### NOTE: root_dir should only contain output directories
+root_dir:/disks/ceres/makemake/acomp/jstaff/raijin/enzoamr-2.3/1Moz0.02late-2/128/4levels/2part/run210Mj/
+
+#### The directories in root_dir to exclude from the analysis. Seperate by ,
+#### Put NONE for no directories.
+exclude_dir:1part 
+
+#### The path where the plots and output files will be written. Ensure it ends with a /
+plot_dir:/disks/ceres/makemake/acomp/abatten/jstaff/sim2/plots/
+
+#### Number to start counding from in path.
+initial_path:0
+
+#### The number of directories to be analysed.
+#### Plus one to match with python range functions
+final_path_plus_one:1
+
+
+[Damping Analysis Section]
+
+#### If the data from all the directories is to be stored
+global_storage:False 
+
+
+[Energy Section]
+
+#### The name of the output file
+output_file_name:energy_components.txt
+
+#### Selects if you want to keep writing in the tail of a previous file with the
+#### name as specified in "output_file_name" or you want to create a new one
+#### from scratch (0 = OVERWRITE, 1 = APPEND)
+output_file_append:0
+
+#### Use or not the smoothed potential to compute potential energies involving
+#### particles (0 = NO, 1 = YES)
+use_smoothed_potential:1
+
+#### Smoothing length in number of cells (only used if "use_smoothed_potential = 1")
+smoothing_length:3.0
+
+

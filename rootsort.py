@@ -16,15 +16,14 @@ def root_sort(root_dir, exclude=[]):
         print("<-------------->")
 	print(" ")
 	print("SORTING ROOT DIRECTORY FILES")
-
+	print(root_dir)
 	root_dir_list = []
         # Cycles subfolders and files in the root directory
         for root, dirs, files in os.walk(root_dir):
-                # Skip the direcories that are listed in exclude_dir
+		# Skip the direcories that are listed in exclude_dir
                 for i in range(len(exclude)):
                         if  exclude[i] not in root.split("/"):
                                 current_folder = root
-
                                 # os.walk includes the root directory.
                                 # We don't want the root directory!!
                                 if (current_folder != root_dir):
