@@ -331,6 +331,13 @@ def read_data(input_directory, index):
 
 ################################################################################
 
+def _main():s
+
+
+
+
+
+
 if __name__ == "__main__":
 
 	# Read the inlist file and return the values of the variables.
@@ -357,3 +364,10 @@ if __name__ == "__main__":
                 print("DATA NOT STORED")
 	        print("<-------------->")
 		print(" ")
+
+
+
+
+
+
+
