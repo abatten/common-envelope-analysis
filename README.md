@@ -2,7 +2,7 @@
 My collection of yt-scripts that I have written for data analysis.
 
 ##Analysis Scripts:
-1.standard_analysis
+1.standard_analysis \n
 2.ce_energy_smoothed_potential
 
 ##Required Modules:
