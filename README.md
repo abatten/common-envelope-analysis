@@ -33,6 +33,29 @@ For example
 ```
     python 4.ce_seperations.py inlist_ce_analysis
 ```
+
+### 5.plot_from_file.py
+This script is for ploting the data created by the other analysis scripts.
+It has options for plotting the energies, seperation, massloss and thermal.
+To run the script you have to add speficy which plot you want by adding it as
+an argument. 
+
+#### Plot Types:
+--energy: Create an energy plot
+--seperation: Create a seperation plot
+--angularmomentum: Create an angular momentum plot
+--thermal: Create a thermal energy plot
+--massloss: Create a mass loss and mass loss rate plot
+
+#### Optionals
+--smoothed: Find NaN's in energy file and replace them.
+--marked: Add vertical black lines to the plot. List numbers after --marked. 
+
+An example of this script being used to create a smooth, marked energy plot.
+```
+    python 5.plot_from_file.py /path/to/file/ --energy --smoothed --marked 1 2 3
+```
+
 ## CEFunctions
 CEFunctions is a modules that is required to run these YT scripts. 
 Each script will import CEFunctions as cef.
