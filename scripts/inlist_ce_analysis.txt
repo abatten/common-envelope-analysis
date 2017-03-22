@@ -1,0 +1,84 @@
+[Common Section]
+
+; The path where the data directories are stored.
+; NOTE: root_dir should only contain output directories
+
+; root_dir = /disks/ceres/makemake/acomp/jstaff/raijin/enzoamr-2.3/1Moz0.02late-2/128/4levels/2part/run210Mj/ 
+; root_dir = /disks/ceres/makemake/acomp/riaconi/rxi552/Potential_spikes_tests/output_every_timestetp
+; root_dir = /disks/ceres/makemake/acomp/riaconi/rxi552/Tauris_vandenHeuvel/128_4lev_25AUbox_273Rsun/run
+root_dir = /disks/ceres/makemake/acomp/jstaff/swinstar/enzoamr-2.3/jc-300/run
+
+; root_dir = /disks/ceres/makemake/acomp/riaconi/riaconi-swinstar/riaconi/enzo_run/1MsunPrimary_128_6lev_20AUbox_periodic/M2_0p6
+
+
+; The directories in root_dir to exclude from the analysis. Seperate by ,
+; Put NONE for no directories.
+exclude_dir = NONE
+; exclude_dir = 1part
+
+; The path where the plots and output files will be written. Ensure it ends with a /
+; plot_dir = /disks/ceres/makemake/acomp/abatten/jstaff/sim2/plots/
+plot_dir = /disks/ceres/makemake/acomp/abatten/
+; plot_dir = /disks/ceres/makemake/acomp/abatten/jstaff/sim2/potential_spikes_test_plots/
+; plot_dir = /disks/ceres/makemake/acomp/abatten/tauris/plots/
+
+; Number to start counding from in path.
+initial_path = 0
+
+; The number of directories to be analysed.
+; Plus one to match with python range functions
+final_path_plus_one = 1
+
+################################################################################
+[Damping Analysis Section]
+
+; If the data from all the directories is to be stored
+global_storage = False 
+
+################################################################################
+[Energy Section]
+
+; The name of the output file
+output_file_name = energy_components_ri2.txt
+
+; Selects if you want to keep writing in the tail of a previous file with the
+; name as specified in "output_file_name" or you want to create a new one
+; from scratch (False = OVERWRITE, True = APPEND)
+output_file_append = False
+
+; Use/not smoothed potential to compute potential energies involving particles
+use_smoothed_potential = True
+
+; Smoothing length in number of cells (used "use_smoothed_potential = True")
+smoothing_length = 3.0
+
+select_primary = True
+
+################################################################################
+[Angular Momentum Section]
+
+; The name of the output file 
+output_file_name = angular_momentum_components.txt
+
+output_file_append = False
+
+; Compute or not the angular momentum wrt the center of mass of the system
+angular_momentum_wrt_com = True
+
+; Smoothing length in number of cells
+smoothing_length = 3.0
+
+
+################################################################################
+[Seperation Section]
+
+particle_number = 3
+
+output_file_name = seperations.txt
+
+core_mass = 0.3940
+
+core_mass_sensitivity = 0.01
+
+particle_number = 3
+################################################################################
