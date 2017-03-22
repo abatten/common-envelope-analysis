@@ -10,6 +10,7 @@ import sys
 import ConfigParser
 
 import cefunctions as cef
+
 mylog.disabled = True
 
 ######################################################################
@@ -44,8 +45,10 @@ def read_inlist(ipath):
     print("OUTPUT FILE APPEND: " + str(output_file_append))
     print("ANGULAR MOMENTUM WRT COM: " + str(angular_momentum_wrt_com))
     print("SMOOTHING LENGTH: " + str(smoothing_length))
-    return (root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one,
-           output_file_name, output_file_append,angular_momentum_wrt_com, smoothing_length)
+    return (root_dir, exclude_dir, plot_dir, initial_path, 
+            final_path_plus_one, output_file_name, 
+            output_file_append,angular_momentum_wrt_com, 
+            smoothing_length)
 
 def BoundMinDensity(field, data):
     # Get the length, time and mass units used in the current simulation  
@@ -53,7 +56,7 @@ def BoundMinDensity(field, data):
     time_unit1 = data.pf.parameters["TimeUnits"]
     mass_unit1 = data.pf.parameters["MassUnits"]
 
-   # Step 1: Thermal Energy of Gas
+    # Step 1: Thermal Energy of Gas
     current_Etherm_gas = data['ThermalEnergy'] * data['CellMass']
     # Step 2: Kinetic Energy of the Gas
     current_Ekin_gas = data['KineticEnergy'] * data['CellVolume']
@@ -148,9 +151,8 @@ def open_file(file_name, append):
         output_file = open(file_name, 'w' )
 
     # Write the first line of information in the file
-        output_file.write("Time(yr), Cycle(#), Lp_x(gcm/s), Lp_y(gcm/s), Lp_z(gcm/s), Lg_x(gcm/s)," 
+        output_file.write("Time(yr), Cycle(#), Lp_x(gcm/s), Lp_y(gcm/s), Lp_z(gcm/s), Lg_x(gcm/s),"
                           "Lg_y(gcm/s), Lg_z(gcm/s), Ltot_x(gcm/s), Ltot_y(gcm/s), Ltot_z(gcm/s)"+"\n")
-
 
     elif (append == True): # Append
         output_file = open(file_name, 'a' )
@@ -165,7 +167,12 @@ if __name__ == "__main__":
     # Read the inlist file and return the values of the variables.
     if len(sys.argv) >= 2:
         inlist_path = sys.argv[1]
-        root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one, output_file_name, output_file_append, angular_momentum_wrt_com, smoothing_length = read_inlist(inlist_path)
+
+        (root_dir, exclude_dir, plot_dir, initial_path, 
+         final_path_plus_one, output_file_name, 
+         output_file_append, angular_momentum_wrt_com, 
+         smoothing_length) = read_inlist(inlist_path)
+    
     else:
         print("Inlist File not supplied!")
         sys.exit(0)
@@ -174,7 +181,8 @@ if __name__ == "__main__":
     add_field("BoundMinDensity", function=BoundMinDensity, units=r"\rm{g}/\rm{cm}^{3}")
     
     # Initialise arrays    
-    current_time, cycle, Lp_x, Lp_y, Lp_z, Lg_x, Lg_y, Lg_z, Ltot_x, Ltot_y, Ltot_z = initialise_arrays()
+    (current_time, cycle, Lp_x, Lp_y, Lp_z, 
+     Lg_x, Lg_y, Lg_z, Ltot_x, Ltot_y, Ltot_z) = initialise_arrays()
 
     # Sort the root directory
     root_dir_list = cef.root_sort(root_dir, exclude=exclude_dir)
@@ -182,4 +190,3 @@ if __name__ == "__main__":
     # Set output file name and open it to write
     output_file_name = plot_dir + output_file_name
     output_file = open_file(output_file_name, output_file_append)
-

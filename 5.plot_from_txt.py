@@ -37,8 +37,6 @@ def energy_plot(txt_file, smoothed, marked):
 
             x = np.isnan(data[:,6])
 
-
-
         outfilename = outfilename + "_smooth_2"
 
     ax = plt.subplot(111)
@@ -102,7 +100,6 @@ def thermal_plot(txt_file, marked):
 
     # Find the location of the input file to save plot to.
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
-    #smoothed = True
     outfilename = "thermal_components"
 
 
@@ -112,18 +109,10 @@ def thermal_plot(txt_file, marked):
     plt.plot(data[:,0], data[:,12], linewidth=1, label = "Primary Thermal");
     plt.plot(data[:,0], data[:,13], linewidth=1, label = "Vacuum Thermal");
 
-
 #    plt.ylim(-2e46,1.5e46)
-    plt.xlim(0,14.5)
+#    plt.xlim(0,14.5)
     plt.xlabel('Time (yr)', fontsize=16)
     plt.ylabel("Energy (ergs)", fontsize=16)
-
-    plt.legend(loc='best', frameon=False)
-    plt.savefig(plot_loc + outfilename + ".png")
-    plt.show()
-
-
-
 
 
     if marked:
@@ -132,20 +121,52 @@ def thermal_plot(txt_file, marked):
 
         outfilename = outfilename + "_marked"
 
+    plt.legend(loc='best', frameon=False)
+    plt.savefig(plot_loc + outfilename + ".png")
+    plt.show()
+
+def mass_loss_plot(txt_file, marked):
+    data = genfromtxt(txt_file, skip_header=1);
+
+    # Find the location of the input file to save plot to.
+    plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
+    outfilename = "mass_loss"
+
+    ax1 = plt.subplot(111)
+    ax2 = ax1.twinx()
+
+    mass_loss_rate = []
+    for i in range(len(data[:,1])-1):
+        mass_diff = data[i,1] - data[i+1,1]
+        time_diff = data[i+1,0] - data[i,0]
+
+        mass_loss_rate.append(mass_diff/time_diff)
+
+    ax1.plot(data[:,0], data[:,1], 'b', linewidth=1, label = "Mass");
+    ax2.plot(data[:-1,0], mass_loss_rate,'r', linewidth=1, label = "Mass loss rate");
+
+#    plt.ylim(-2e46,1.5e46)
+    plt.xlim(0,14.5)
+    ax1.set_xlabel("Time " + r"($\mathrm{yr}$)", fontsize=16)
+    ax1.set_ylabel("Mass "+r"($M_\odot$)", fontsize=16)
+    ax2.set_ylabel("Mass loss rate " +r"($M_\odot/\mathrm{yr}$)", fontsize=16)
 
 
+    if marked:
+        for i in range(len(marked)):
+            plt.axvline(x=marked[i], ymin=0, ymax=1, linewidth=2, color='k')
 
+        outfilename = outfilename + "_marked"
 
-
-
-
-
-
-
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(h1+h2, l1+l2, loc='best', frameon=False)
+    plt.tight_layout()
+    plt.savefig(plot_loc + outfilename + ".png")
+    plt.show()
 
 def angular_momentum_plot():
     return None
-
 
 
 if __name__ == "__main__":
@@ -156,8 +177,9 @@ if __name__ == "__main__":
     parser.add_argument("--smoothed", help="Create a smoothed energy plot by replacing NaN's with the average of the values on either side of the,", action="store_true")
     parser.add_argument("--marked", help="Create a marked energy plot by adding vertical lines at x positions. e.g --marked 0 0.1 2 3", type=float, nargs="+")  
     parser.add_argument("--seperation", help="Create a plot of the seperations from the specified file", action="store_true")
-    parser.add_argument("--angular_momentum", help="Create a plot of the angular momentum from the specified file", action="store_true")
+    parser.add_argument("--angularmomentum", help="Create a plot of the angular momentum from the specified file", action="store_true")
     parser.add_argument("--thermal", help="Create a plot of the thermal energies from the specified file", action="store_true")
+    parser.add_argument("--massloss", help="Create a plot of the mass loss and the mass loss rate from the specified file", action="store_true")
     parser.add_argument("txts", help="The text files to read.", nargs='*')
     
     args = parser.parse_args()
@@ -170,8 +192,11 @@ if __name__ == "__main__":
         for i in range(len(args.txts)):
             seperation_plot(args.txts[i], args.marked)
 
-
     if args.thermal:
         for i in range(len(args.txts)):
             thermal_plot(args.txts[i], args.marked)
+
+    if args.massloss:
+        for i in range(len(args.txts)):
+            mass_loss_plot(args.txts[i], args.marked)
 
