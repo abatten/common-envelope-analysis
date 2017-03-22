@@ -9,8 +9,7 @@ import os
 import sys
 import ConfigParser
 
-from index2str import index2str
-from rootsort import root_sort
+import cefunctions as cef
 
 mylog.disabled = True
 
@@ -61,39 +60,6 @@ def read_inlist(ipath):
            output_file_name, output_file_append, use_smoothed_potential, 
            smoothing_length, select_primary)
 
-def distance(point_1, point_2, units=1):
-	"""
-	Calculates the distance between two 3D vectors using pythagoras.
-	
-	point_1: A list of 3 floats or ints.
-	point_2: A list of 3 floats or ints.
-	"""
-	
-	distance = (((point_2[0]-point_1[0])*units)**2.0 
-			+ ((point_2[1]-point_1[1])*units)**2.0 
-			+ ((point_2[2]-point_1[2])*units)**2.0)**0.5
-	return distance
-
-def grav_pot(Pmass, Cmass, rad, smoothed, smoothing_length=3.0, smallest_cell=0):
-    """
-    Calculates the gravitational potential between two objects.
-    The potential can be smoothed or not. For the smoothed potential see M. Ruffert 1993
-    """
-    if smoothed:
-        grav_constant = 6.67e-8
-        top = grav_constant * Pmass * Cmass
-        slsc = smoothing_length * smallest_cell
-        bottom = (rad**2.0 + (slsc**2.0 * np.exp((-rad**2.0)/(slsc**2.0))))**0.5
-        potential = - top / bottom
-
-    elif not smoothed:
-        grav_constant = 6.67e-8
-        top = grav_constant * Pmass * Cmass
-        bottom = rad 
-        potential = - top / bottom
-
-    return potential
-	
 def SelectPrimary(field, data):
     """
     Defines a new YT field containing the indexes of the primary. 
@@ -120,7 +86,7 @@ def SelectPrimary(field, data):
     	# Whole box needed to find the particles
     	box = data.pf.h.all_data()
 		
-		# Determine the size of the smallest cell for the smoothing length
+	# Determine the size of the smallest cell for the smoothing length
         smallest_cell_length =  data.pf.h.get_smallest_dx() * length_unit1
         radius_particle = dict()
         current_Epot_particle = dict()
@@ -133,11 +99,11 @@ def SelectPrimary(field, data):
                                box['particle_position_z'][i])
 	   
             # Calculate the distance the gas is from the particle.
-            radius_part = distance(data_coords, particle_coords, length_unit1)
+            radius_part = cef.distance(data_coords, particle_coords, length_unit1)
 		
 	    # Smoothed Gravitational Potential
 	    # See M. Ruffert 1993
-	    current_Epot_particle[i] = grav_pot(box['ParticleMass'][i], data['CellMass'], radius_part, use_smoothed_potential, smoothing_length, smallest_cell_length)	
+	    current_Epot_particle[i] = cef.grav_pot(box['ParticleMass'][i], data['CellMass'], radius_part, use_smoothed_potential, smoothing_length, smallest_cell_length)	
         
         current_Epot_part_to_gas = 0
 	for i in range(len(box['particle_index'])):
@@ -162,18 +128,11 @@ def SelectPrimary(field, data):
     primary = np.invert(background) # Boolean array
     return (primary)
 
-def del_used_variables(delete_variables):
-    if delete_variables == True:
-        del pf, length_unit1, time_unit1, mass_unit1, common_envelope, current_cycle, current_time, primary_boolean, vacuum_boolean,\
-            current_Etherm_primary, current_Etherm_vacuum, current_Etherm_gas, current_Epot_gas, current_Ekin_gas, current_Ekin_part,\
-            radius_part_0, current_Epot_part_1, radius_part_to_part, current_Epot_part_to_part, cell_length, smoothing_length,\
-            current_Epot_part_to_gas, current_Epot_part, current_Etherm_tot, current_Epot_tot, current_Ekin_tot, current_Etot
-
 def open_file(file_name, append):
     if (append == False): # Overwrite
         output_file = open(file_name, 'w' )
 
-    # Write the first line of information in the file
+        # Write the first line of information in the file
         output_file.write("Time (yr), Total, Total Kinetic, Total Potential, Total Thermal, " 
                           "Gas Kinetic, Gas potential, Gas Thermal, Particle Kinetic, "
                           "Part-part Potential, Part-gas Potential, Top-grid Cycle (#), "
@@ -187,7 +146,7 @@ def open_file(file_name, append):
 
 def ce_energies(directory, index, file):
     pf = load(directory)
-    str_index = index2str(index)
+    str_index = cef.index2str(index)
 
     print(" ")
     print("<-------------->")
@@ -256,13 +215,13 @@ def ce_energies(directory, index, file):
                                common_envelope['particle_position_z'][i])
 
             # Calculate the distance the gas is from the particle.
-            radius_particle = distance(data_coords, particle_coords, length_unit1)
+            radius_particle = cef.distance(data_coords, particle_coords, length_unit1)
             # Calculate Gravitational Potential
-            current_Epot_particles[i] = grav_pot(common_envelope['ParticleMass'][i], common_envelope['CellMass'], radius_particle, use_smoothed_potential, smoothing_length, smallest_cell_length)
+            current_Epot_particles[i] = cef.grav_pot(common_envelope['ParticleMass'][i], common_envelope['CellMass'], radius_particle, use_smoothed_potential, smoothing_length, smallest_cell_length)
             # Add the current potential to the running total potential.
             current_Epot_particles_to_gas = current_Epot_particles_to_gas + np.sum(current_Epot_particles[i])
 
-        grav_pot_energy = [0]*len(common_envelope['particle_index'])
+        grav_pot_energy = [0]*len(common_envelope['particle_index']) # Create array to store Grav Pot Energy of Each Particle
         current_Epot_particles = 0
         for i in range(len(common_envelope['particle_index'])):
             for j in range(len(common_envelope['particle_index'])):
@@ -275,8 +234,8 @@ def ce_energies(directory, index, file):
                                          common_envelope['particle_position_y'][j],
                                          common_envelope['particle_position_z'][j])
 
-                    dist = distance(particle_i_coords, particle_j_coords, length_unit1)
-                    grav_pot_energy[i] += grav_pot(common_envelope['ParticleMass'][i], common_envelope['ParticleMass'][j], dist, use_smoothed_potential, smoothing_length, smallest_cell_length)
+                    dist = cef.distance(particle_i_coords, particle_j_coords, length_unit1)
+                    grav_pot_energy[i] += cef.grav_pot(common_envelope['ParticleMass'][i], common_envelope['ParticleMass'][j], dist, use_smoothed_potential, smoothing_length, smallest_cell_length)
             current_Epot_particles += grav_pot_energy[i]
 
     else: # If not type 41 set everything to 0.
@@ -296,6 +255,9 @@ def ce_energies(directory, index, file):
              + str(current_Ekin_particles) + " " + str(current_Epot_particles) + " " + str(current_Epot_particles_to_gas) + " " \
              + str(current_cycle) + " " + str(current_Etherm_primary) + " " + str(current_Etherm_vacuum) + "\n")
 
+    return pf
+
+
 
 if __name__ == "__main__":
     # Read the inlist file and return the values of the variables.
@@ -310,7 +272,7 @@ if __name__ == "__main__":
     add_field("SelectPrimary", function=SelectPrimary, units=r"Boolean array")
 
     # Sort the root directory
-    root_dir_list = root_sort(root_dir, exclude=exclude_dir)
+    root_dir_list = cef.root_sort(root_dir, exclude=exclude_dir)
 
     # Set output file name and open it to write
     output_file_name = plot_dir + output_file_name
@@ -318,5 +280,6 @@ if __name__ == "__main__":
 
     # Calculate Energies for every directory and write them
     for index in range(initial_path, final_path_plus_one):
-        ce_energies(root_dir_list[index], index, output_file)
+        pf = ce_energies(root_dir_list[index], index, output_file)
 
+    output_file.close()
