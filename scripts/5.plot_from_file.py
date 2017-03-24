@@ -7,7 +7,6 @@ from pylab import genfromtxt
 import ConfigParser
 import argparse
 
-
 import cefunctions as cef
 
 def energy_plot(txt_file, smoothed, marked):
@@ -88,7 +87,7 @@ def seperation_plot(txt_file, marked):
 
         outfilename = outfilename + "_marked"
 
-    plt.xlim(0,1.65)
+    plt.ylim(0,500)
     plt.xlabel('Time (yr)', fontsize=16)
     plt.ylabel("Seperation " r'($\mathrm{R}_\odot$)', fontsize=16)
     #plt.legend(bbox_to_anchor=(0.7, 0.65),loc=9, frameon=False)

@@ -9,11 +9,6 @@ arguments when calling the python script.
 
 >>> python <file_name> <path/to/inlist> 0,9,10
 
-Set root_dir to the directory where the data files are stored.
-Set plot_sir to where you want the plots to be saved.
-Set final_path_plus_one to the number of directories + 1.
-Add the names of directories to exclude to exclude_dir
-
        Radial Plots                       Slice Plots
 ------------------------------------------------------------------------
 0: Density vs Radius         |  9: Density Slice along Z-Axis   

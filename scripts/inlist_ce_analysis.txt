@@ -5,29 +5,29 @@
 
 ; root_dir = /disks/ceres/makemake/acomp/jstaff/raijin/enzoamr-2.3/1Moz0.02late-2/128/4levels/2part/run210Mj/ 
 ; root_dir = /disks/ceres/makemake/acomp/riaconi/rxi552/Potential_spikes_tests/output_every_timestetp
-; root_dir = /disks/ceres/makemake/acomp/riaconi/rxi552/Tauris_vandenHeuvel/128_4lev_25AUbox_273Rsun/run
-root_dir = /disks/ceres/makemake/acomp/jstaff/swinstar/enzoamr-2.3/jc-300/run
+root_dir = /disks/ceres/makemake/acomp/riaconi/rxi552/Tauris_vandenHeuvel/128_4lev_25AUbox_273Rsun/run
+; root_dir = /disks/ceres/makemake/acomp/jstaff/swinstar/enzoamr-2.3/jc-300/run
 
 ; root_dir = /disks/ceres/makemake/acomp/riaconi/riaconi-swinstar/riaconi/enzo_run/1MsunPrimary_128_6lev_20AUbox_periodic/M2_0p6
 
 
 ; The directories in root_dir to exclude from the analysis. Seperate by ,
 ; Put NONE for no directories.
-exclude_dir = NONE
+exclude_dir = DD9999_1.1_1.3
 ; exclude_dir = 1part
 
 ; The path where the plots and output files will be written. Ensure it ends with a /
 ; plot_dir = /disks/ceres/makemake/acomp/abatten/jstaff/sim2/plots/
-plot_dir = /disks/ceres/makemake/acomp/abatten/
+; plot_dir = /disks/ceres/makemake/acomp/abatten/
 ; plot_dir = /disks/ceres/makemake/acomp/abatten/jstaff/sim2/potential_spikes_test_plots/
-; plot_dir = /disks/ceres/makemake/acomp/abatten/tauris/plots/
+plot_dir = /disks/ceres/makemake/acomp/abatten/tauris/plots/
 
 ; Number to start counding from in path.
 initial_path = 0
 
 ; The number of directories to be analysed.
 ; Plus one to match with python range functions
-final_path_plus_one = 1
+final_path_plus_one = 165
 
 ################################################################################
 [Damping Analysis Section]
@@ -39,7 +39,7 @@ global_storage = False
 [Energy Section]
 
 ; The name of the output file
-output_file_name = energy_components_ri2.txt
+output_file_name = energy_components0-164.txt
 
 ; Selects if you want to keep writing in the tail of a previous file with the
 ; name as specified in "output_file_name" or you want to create a new one
@@ -74,7 +74,7 @@ smoothing_length = 3.0
 
 particle_number = 3
 
-output_file_name = seperations.txt
+output_file_name = seperations2.txt
 
 core_mass = 0.3940
 

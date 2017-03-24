@@ -20,18 +20,25 @@ arguments when calling the python script.
 
 #### List of Avaliable Plots:
 
-       Radial Plots                       Slice Plots
-------------------------------------------------------------------------
-0: Density vs Radius         |  9: Density Slice along Z-Axis  
-1: Radial Velocity vs Radius | 10: Density Projection along Z-Axis  
-2: Kinetic Energy vs Radius  | 11: Pressure Slice along Z-Axis  
-3: Thermal Energy vs Radius  | 12: Thermal Energy SLice along Z-Axis  
-4: Total Energy vs Radius    | 13: Density Gradient Modulus Slice along Z-Axis  
-5: Grav Potential vs Radius  | 14: Velocity Modulus Slice along Z-Axis  
-6: X-Velocity vs Radius      | 15: Temperature Slice along Z-Axis   
-7: Y-Velocity vs Radius      | 16: Mach Number Slice along Z-Axis  
-8: Z-Velocity vs Radius      | 17: Entropy Slice along Z-Axis  
-                             | 18: Gravitational Potential Slice aling Z-Axis  
+0: Density vs Radius          
+1: Radial Velocity vs Radius 
+2: Kinetic Energy vs Radius   
+3: Thermal Energy vs Radius   
+4: Total Energy vs Radius     
+5: Grav Potential vs Radius   
+6: X-Velocity vs Radius        
+7: Y-Velocity vs Radius       
+8: Z-Velocity vs Radius       
+9: Density Slice along Z-Axis                   
+10: Density Projection along Z-Axis
+11: Pressure Slice along Z-Axis
+12: Thermal Energy SLice along Z-Axis
+13: Density Gradient Modulus Slice along Z-Axis
+14: Velocity Modulus Slice along Z-Axis
+15: Temperature Slice along Z-Axis
+16: Mach Number Slice along Z-Axis
+17: Entropy Slice along Z-Axis
+18: Gravitational Potential Slice aling Z-Axis
 
 An example of running this script to create density and gravitational potential
 slice plots.
