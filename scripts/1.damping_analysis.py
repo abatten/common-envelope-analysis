@@ -7,7 +7,7 @@ The script can generate a number of plots as listed below.
 To run this script you specify the plots by adding them as 
 arguments when calling the python script. 
 
->>> python <file_name> <path/to/inlist> 0,9,10
+>>> python <file_name> <path/to/inlist> <>
 
        Radial Plots                       Slice Plots
 ------------------------------------------------------------------------
@@ -20,6 +20,8 @@ arguments when calling the python script.
 6: X-Velocity vs Radius      | 15: Temperature Slice along Z-Axis
 7: Y-Velocity vs Radius      | 16: Mach Number Slice along Z-Axis
 8: Z-Velocity vs Radius      | 17: Entropy Slice along Z-Axis
+                             | 18: Gravitational Potential Slice aling Z-axis      
+
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -172,7 +174,7 @@ def pressure_slice_along_z(profile, radial_profile, ce, str_index):
 
 def thermal_energy_slice_along_z(profile, radial_profile, ce, str_index):
     sp = SlicePlot(profile, 'z', "ThermalEnergy", width = 1.0)
-    sp.annotate_velocity(factor=10, normalize=False) #overplots velocity field vectors
+    #sp.annotate_velocity(factor=10, normalize=False) #overplots velocity field vectors
     sp.annotate_particles(1.0, p_size=50.0, marker='o', col='black') #overplots the projection on the axis of the particLes
     sp.annotate_text((0.7,1.05), "time = " + str(profile.current_time) + "yr") 
     sp.save(plot_dir + "thermalenergy_slice_z_" + str_index + ".png")
@@ -313,14 +315,14 @@ def read_data(input_directory, index):
     radial_profile = BinnedProfile1D(common_envelope, 200, 'Radius', 0.0, system_radius, log_space = False)
 
     radial_profile.add_fields("Density")
-#    radial_profile.add_fields("x-velocity")
-#    radial_profile.add_fields("y-velocity")
-#    radial_profile.add_fields("z-velocity")
-#    radial_profile.add_fields("RadialVelocity")
-#    radial_profile.add_fields("KineticEnergy")
-#    radial_profile.add_fields("ThermalEnergy")
-#    radial_profile.add_fields("TotalEnergy")
-#    radial_profile.add_fields("Grav_Potential")
+    radial_profile.add_fields("x-velocity")
+    radial_profile.add_fields("y-velocity")
+    radial_profile.add_fields("z-velocity")
+    radial_profile.add_fields("RadialVelocity")
+    radial_profile.add_fields("KineticEnergy")
+    radial_profile.add_fields("ThermalEnergy")
+    radial_profile.add_fields("TotalEnergy")
+    radial_profile.add_fields("Grav_Potential")
 
     # Store the data if needed.
     if global_storage == True:
@@ -344,7 +346,6 @@ if __name__ == "__main__":
         root_dir_list = cef.root_sort(root_dir, exclude=exclude_dir)
         plot_vector = args2plots()
 
-        print(plot_vector)
         # Read all the directories in root and produce the plots.
         for index in range(initial_path, final_path_plus_one):
             read_data(root_dir_list[index], index)
