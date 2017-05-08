@@ -4,7 +4,6 @@ These scripts have been specifically written to analyse the output
 of an ENZO common envelope simulation.
 
 
-
 ## Analysis Scripts:
 ### 1.damping_analysis.py
 This script is designed to analyse the data of a pre-common
@@ -15,7 +14,6 @@ The script can generate a number of plots as listed below.
 To run this script you need to specify an inlist file with all the 
 required parameters and specify the plots by adding them as 
 arguments when calling the python script. 
-
 
 
 #### List of Avaliable Plots:
