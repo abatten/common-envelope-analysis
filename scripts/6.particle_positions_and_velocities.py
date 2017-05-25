@@ -107,31 +107,63 @@ def positions_velocities(directory, index, outfile):
                       common_envelope['particle_position_y'][primary_index] * length_unit1,
                       common_envelope['particle_position_z'][primary_index] * length_unit1]
 
-    primary_vel = [common_envelope['particle_velocity_x'][primary_index] * length_unit1,
-                   common_envelope['particle_velocity_y'][primary_index] * length_unit1,
-                   common_envelope['particle_velocity_z'][primary_index] * length_unit1]
+    primary_vel = [common_envelope['particle_velocity_x'][primary_index],
+                   common_envelope['particle_velocity_y'][primary_index],
+                   common_envelope['particle_velocity_z'][primary_index]]
 
 
     particle_indicies = common_envelope['particle_index']
     print(particle_indicies)
-    print(common_envelope['particle_position_x'][particle_indicies] * length_unit1,
-                                  common_envelope['particle_position_y'][particle_indicies] * length_unit1,
-                                  common_envelope['particle_position_z'][particle_indicies] * length_unit1)
+
+    coords = {}
+    vels = {}
+
+
+    for i in range(particle_number):
+        if i != primary_index:
+            companion_coords = (str(common_envelope['particle_position_x'][i] * length_unit1) + " "
+                              + str(common_envelope['particle_position_y'][i] * length_unit1) + " "
+                              + str(common_envelope['particle_position_z'][i] * length_unit1))
+
+            companion_vels = (str(common_envelope['particle_velocity_x'][i] * length_unit1) + " "
+                            + str(common_envelope['particle_velocity_y'][i] * length_unit1) + " "
+                            + str(common_envelope['particle_velocity_z'][i] * length_unit1))
        
 
-    output_file.write(str(current_time)+" "+str(current_cycle)+" "+str(primary_coords[0])+" "
-                     +str(primary_vel[0])+" "+str(primary_coords[1])+" "+str(primary_vel[1])+" "
-                     +str(primary_coords[2])+" "+str(primary_vel[2]))
+            coords[particle_indicies[i]] = companion_coords
+            vels[particle_indicies[i]] = companion_vels
+
+    data = str(current_time) + " " + str(current_cycle) + " "
+    for i in range(len(primary_coords)):
+        data += str(primary_coords[i]) + " " + str(primary_vel[i]) + " "
+
+    for i in range(len(coords.items())):
+            data += coords.items()[i][1] + " " + vels.items()[i][1] + " "
+
+    print(data)
+
+#    output_file.write(str(current_time)+" "+str(current_cycle)+" "+str(primary_coords[0])+" "
+#                     +str(primary_vel[0])+" "+str(primary_coords[1])+" "+str(primary_vel[1])+" "
+#                     +str(primary_coords[2])+" "+str(primary_vel[2])+" ")
+
+
+   
+#    for i in range(len(coords.items())):
+#        print(coords.items()[i], vels.items()[i])
+#        print(coords.items()[i][1][1:-1], vels.items()[i][1])
+#        output_file.write(str(coords.items()[i][1]) + " " + str(vels.items()[i][1]) + " ")
 
     
-    for i in range(len(particle_indicies)):
-        if i != primary_index:
-            output_file.write(str(common_envelope["particle_position_x"][particle_indicies[i]])+" "
-                              +str(common_envelope["particle_velocity_x"][particle_indicies[i]])+" " 
-                              +str(common_envelope["particle_position_y"][particle_indicies[i]])+" "
-                              +str(common_envelope["particle_velocity_y"][particle_indicies[i]])+" "
-                              +str(common_envelope["particle_position_z"][particle_indicies[i]])+" "
-                              +str(common_envelope["particle_velocity_z"][particle_indicies[i]]))
+#    for i in range(len(particle_indicies)):
+#        if i != primary_index:
+#            output_file.write(str(common_envelope["particle_position_x"][particle_indicies[i]]*length_unit1)+" "
+#                              +str(common_envelope["particle_velocity_x"][particle_indicies[i]])+" " 
+#                              +str(common_envelope["particle_position_y"][particle_indicies[i]]*length_unit1)+" "
+#                              +str(common_envelope["particle_velocity_y"][particle_indicies[i]])+" "
+#                              +str(common_envelope["particle_position_z"][particle_indicies[i]]*length_unit1)+" "
+#                              +str(common_envelope["particle_velocity_z"][particle_indicies[i]])+" ")
+
+    outfile.write(data)
 
     outfile.write("\n")
          

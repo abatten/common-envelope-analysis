@@ -9,7 +9,7 @@ import os
 import sys
 import ConfigParser
 
-import cefunctions as cef
+import modules.cefunctions as cef
 
 mylog.disabled = True
 
@@ -31,8 +31,6 @@ def read_inlist(ipath):
     final_path_plus_one = config.getint("Common Section", "final_path_plus_one")
     output_file_name = config.get("Seperation Section", "output_file_name")
     particle_number = config.getint("Seperation Section", "particle_number")
-    core_mass = config.getfloat("Seperation Section", "core_mass")
-    core_mass_sensitivity = config.getfloat("Seperation Section", "core_mass_sensitivity")
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
@@ -42,12 +40,9 @@ def read_inlist(ipath):
     print("FINAL PATH PLUS ONE: " + str(final_path_plus_one))
     print("OUTPUT FILE NAME: " + str(output_file_name))
     print("PARTICLE NUMBER: " + str(particle_number))
-    print("CORE MASS: " + str(core_mass))
-    print("CORE MASS SENSITIVITY: " + str(core_mass_sensitivity))
 
     return (root_dir, exclude_dir, plot_dir, initial_path,
-            final_path_plus_one, output_file_name, particle_number, 
-            core_mass, core_mass_sensitivity)
+            final_path_plus_one, output_file_name, particle_number)
 
 
 def open_file(file_name, num_particles):
@@ -93,7 +88,8 @@ def seperations(directory, index, output_file, particle_number):
     else:
         current_cycle = pf.parameters['InitialCycleNumber']
 
-    current_time = pf.current_time * time_unit1
+    yr = 365.35 * 24 * 60 * 60
+    current_time = pf.current_time / yr
 
 
     # Find which index corresponds to the primary star (the largest mass).
@@ -128,7 +124,7 @@ def seperations(directory, index, output_file, particle_number):
             sep[particle_indicies[i]] = seperation
             print("Companion " + str(particle_indicies[i]), seperation)
 
-    row = str(current_time) + " " +str (current_cycle)
+    row = str(current_time * time_unit1) + " " +str (current_cycle)
     for i in range(len(sep.items())):
         row = " ".join([row, str(sep.items()[i][1])])
 
@@ -139,8 +135,7 @@ def seperations(directory, index, output_file, particle_number):
 if __name__ == "__main__":
 
     (root_dir, exclude_dir, plot_dir, initial_path,
-     final_path_plus_one, output_file_name, particle_number, 
-     core_mass, core_mass_sensitivity) = read_inlist(sys.argv[1])
+     final_path_plus_one, output_file_name, particle_number) = read_inlist(sys.argv[1])
 
 
     # Sort the root directory

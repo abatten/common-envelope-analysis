@@ -35,7 +35,7 @@ import os
 import sys
 import ConfigParser
 
-import cefunctions as cef
+import modules.cefunctions as cef
 ########################### CONSTANTS FOR CONVERSIONS ##########################
 
 length_unit = 6.955*10**10 # 1 Rsun in cm

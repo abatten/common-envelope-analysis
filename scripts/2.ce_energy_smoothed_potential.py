@@ -9,7 +9,7 @@ import os
 import sys
 import ConfigParser
 
-import cefunctions as cef
+import modules.cefunctions as cef
 
 mylog.disabled = True
 
@@ -245,7 +245,7 @@ def ce_energies(directory, index, file):
 
     # Calculate totals
     current_Etherm_tot = current_Etherm_gas
-    current_Epot_tot = current_Epot_particles + current_Epot_gas
+    current_Epot_tot = current_Epot_particles + current_Epot_gas + current_Epot_particles_to_gas
     current_Ekin_tot = current_Ekin_gas + current_Ekin_particles
     current_Etot = np.sum(current_Etherm_tot + current_Epot_tot + current_Ekin_tot)
 

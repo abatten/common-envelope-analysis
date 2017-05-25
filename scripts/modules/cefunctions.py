@@ -41,7 +41,6 @@ def grav_pot(mass1, mass2, radius, smoothed,
     Returns:
         potential_energy (flt): The gravitational potential energy 
                                   between the two objects
-########################################################################
     """
 
     if smoothed:
