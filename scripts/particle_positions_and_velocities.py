@@ -83,7 +83,9 @@ def positions_velocities(directory, index, outfile):
     current_cycle = pf.parameters['InitialCycleNumber']
     current_time = pf.current_time
 
-    #adds the whole data as an object called common_envelope. It is an array and you can acces the data by knowing their name through: common_envelope["Dataname"]:
+    # Adds the whole data as an object called common_envelope. 
+    # It is an array and you can acces the data by 
+    # knowing their name through: common_envelope["Dataname"]:
     common_envelope = pf.h.all_data()
 
     if (index == initial_path):
@@ -92,6 +94,7 @@ def positions_velocities(directory, index, outfile):
         current_cycle = pf.parameters['InitialCycleNumber']
 
     particle_masses = common_envelope['ParticleMassMsun']
+    
     # The core of the primary has the largest mass
     primary_mass = np.max(particle_masses)
 
@@ -117,17 +120,15 @@ def positions_velocities(directory, index, outfile):
 
     coords = {}
     vels = {}
-
-
     for i in range(particle_number):
         if i != primary_index:
-            companion_coords = (str(common_envelope['particle_position_x'][i] * length_unit1) + " "
-                              + str(common_envelope['particle_position_y'][i] * length_unit1) + " "
-                              + str(common_envelope['particle_position_z'][i] * length_unit1))
+            companion_coords = [str(common_envelope['particle_position_x'][i] * length_unit1),
+                                str(common_envelope['particle_position_y'][i] * length_unit1),
+                                str(common_envelope['particle_position_z'][i] * length_unit1)]
 
-            companion_vels = (str(common_envelope['particle_velocity_x'][i] * length_unit1) + " "
-                            + str(common_envelope['particle_velocity_y'][i] * length_unit1) + " "
-                            + str(common_envelope['particle_velocity_z'][i] * length_unit1))
+            companion_vels = [str(common_envelope['particle_velocity_x'][i] * length_unit1),
+                              str(common_envelope['particle_velocity_y'][i] * length_unit1),
+                              str(common_envelope['particle_velocity_z'][i] * length_unit1)]
        
 
             coords[particle_indicies[i]] = companion_coords
@@ -138,9 +139,8 @@ def positions_velocities(directory, index, outfile):
         data += str(primary_coords[i]) + " " + str(primary_vel[i]) + " "
 
     for i in range(len(coords.items())):
-            data += coords.items()[i][1] + " " + vels.items()[i][1] + " "
-
-    print(data)
+        for j in range(len(coords.items()[i][1])):
+            data += str(coords.items()[i][1][j]) + " " + str(vels.items()[i][1][j]) + " "
 
 #    output_file.write(str(current_time)+" "+str(current_cycle)+" "+str(primary_coords[0])+" "
 #                     +str(primary_vel[0])+" "+str(primary_coords[1])+" "+str(primary_vel[1])+" "
