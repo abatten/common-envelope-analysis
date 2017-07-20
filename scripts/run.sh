@@ -1,15 +1,26 @@
 #!/bin/bash
 
-
 # The first argument is the script you want to run
 SCRIPT=$1
-INLIST=inlist_ce_analysis_template3.txt
+INLIST=inlist_ce_analysis_template.ini
+
+# If the script is the energy script
+if [[ $SCRIPT == *"energy"* ]]; then
+    echo " "
+    echo "<------------>"
+    echo "Running Energy Script"
+    echo "<------------>"
+    echo " "
+    OUTPUT_NAMES=$"energy_components_"
+    echo "Output File Names:" $OUTPUT_NAMES
+fi
+
 # Range depends on number of directories in path.
 FINAL_PATH=5
 for i in $(seq 0 ${FINAL_PATH})
 do
     echo $i
-    
+    # Make Temp file to use as an inlist
     ANALYSIS_FILE=$(mktemp ce_analysis.XXXXX)
     # Read the inlist file and change the variables
     cat $INLIST |
@@ -23,3 +34,5 @@ do
     rm $ANALYSIS_FILE
 done
 wait
+
+
