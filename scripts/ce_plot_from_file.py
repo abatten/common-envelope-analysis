@@ -235,7 +235,7 @@ def position_and_velocities_plot(txt_file):
         irow+=1
 
     fig.subplots_adjust(left=0.1, right=0.98, wspace=0, hspace=0)
-    plt.savefig("testing.png")
+    plt.savefig("testing2.png")
     plt.show();
 
 
@@ -259,10 +259,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.energy:
-        energy_plot(args.txts[i], args.smoothed, args.marked)
+        energy_plot(args.txts, args.smoothed, args.marked)
 
     if args.seperation:
-        seperation_plot(args.txts[i], args.marked)
+        seperation_plot(args.txts, args.marked)
 
     if args.thermal:
         thermal_plot(args.txts, args.marked)
