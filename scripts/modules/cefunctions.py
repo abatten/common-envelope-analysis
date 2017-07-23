@@ -128,14 +128,14 @@ def root_sort(root_dir, exclude=[]):
             print("EXCLUDING: " + root)
         # Skip the direcories that are listed in exclude_dir
         dirs[:] = [d for d in dirs if d not in exclude]
-        files[:] = []
+        files[:] = []  #  Remove all misc files
         current_folder = root
         # We don't want the root directory!!
         if (current_folder != root_dir):
-            # cycles subfolders and files in the current sub-folder
+            # Cycles subfolders and files in the current sub-folder
             for sub_root, sub_dirs, sub_files in os.walk(root):
-                # sorts the files in the subfolder to have the file 
-                # pass to yt in position [0]
+                # Sorts the files in the subfolder to have the file 
+                # Pass to yt in position [0]
                 sub_files.sort()
                 # Appends path of the enzo target file to root_dir_list 
                 root_dir_list.append(os.path.join(root, sub_files[0]))
