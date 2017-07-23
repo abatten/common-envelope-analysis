@@ -24,7 +24,7 @@ arguments when calling the python script.
 9: Density Slice along Z-Axis                   
 10: Density Projection along Z-Axis    
 11: Pressure Slice along Z-Axis     
-12: Thermal Energy SLice along Z-Axis       
+12: Thermal Energy Slice along Z-Axis       
 13: Density Gradient Modulus Slice along Z-Axis   
 14: Velocity Modulus Slice along Z-Axis      
 15: Temperature Slice along Z-Axis     
@@ -35,7 +35,7 @@ arguments when calling the python script.
 An example of running this script to create density and gravitational potential
 slice plots.
 ```
-    python ce_damping_analysis.py inlist_ce_analysis 0,9,18
+    python ce_damping_analysis.py inlist_ce_analysis 9,18
 ```
 ### ce_energy_smoothed_potential.py
 This script calculats all of the energy components of the common envelope
@@ -74,3 +74,8 @@ An example of this script being used to create a smooth, marked energy plot.
 ```
     python ce_plot_from_file.py /path/to/file/ --energy --smoothed --marked 1 2 3
 ```
+
+### run.sh
+This is a script I use to cheat in parallelising my code. At the moment it only works
+for 'ce_energy_smoothed_potential.py'. It launches multiple instances of the python script
+on different sets of data simulataneiously.
