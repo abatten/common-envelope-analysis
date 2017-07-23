@@ -1,5 +1,5 @@
 ## Analysis Scripts:
-### 1.damping_analysis.py
+### ce_damping_analysis.py
 This script is designed to analyse the data of a pre-common
 envelope damping simulation. With a single star that is inserted 
 in enzo from a 1D stellar evolution code output, via the YT package.
@@ -30,28 +30,30 @@ arguments when calling the python script.
 15: Temperature Slice along Z-Axis     
 16: Mach Number Slice along Z-Axis      
 17: Entropy Slice along Z-Axis       
-18: Gravitational Potential Slice aling Z-Axis     
+18: Gravitational Potential Slice along Z-Axis     
 
 An example of running this script to create density and gravitational potential
 slice plots.
 ```
-    python 1.damping_analysis.py inlist_ce_analysis 0,9,18
+    python ce_damping_analysis.py inlist_ce_analysis 0,9,18
 ```
-### 2.ce_energy_smoothed_potential.py
+### ce_energy_smoothed_potential.py
+This script calculats all of the energy components of the common envelope
 ```
-    python 2.ce_energy_smoothed_potential.py inlist_ce_analysis
-```
-
-### 3.ce_angular_momentum.py
-```
-    python 3.ce_angular_momentum.py inlist_ce_analysis
-```
-### 4.ce_seperations.py
-```
-    python 4.ce_seperations.py inlist_ce_analysis
+    python ce_energy_smoothed_potential.py inlist_ce_analysis.ini
 ```
 
-### 5.plot_from_file.py
+### ce_angular_momentum.py
+```
+    python ce_angular_momentum.py inlist_ce_analysis.ini
+```
+### ce_seperations.py
+This script calculates the seperation(s) between the primary and the companion(s).
+```
+    python ce_seperations.py inlist_ce_analysis.ini
+```
+
+### ce_plot_from_file.py
 This script is for ploting the data created by the other analysis scripts.
 It has options for plotting the energies, seperation, massloss and thermal.
 To run the script you have to add speficy which plot you want by adding it as
@@ -70,5 +72,5 @@ an argument.
 
 An example of this script being used to create a smooth, marked energy plot.
 ```
-    python 5.plot_from_file.py /path/to/file/ --energy --smoothed --marked 1 2 3
+    python ce_plot_from_file.py /path/to/file/ --energy --smoothed --marked 1 2 3
 ```
