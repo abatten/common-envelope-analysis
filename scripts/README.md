@@ -12,6 +12,12 @@ arguments when calling the python script.
 
 #### List of Avaliable Plots:
 
+|   	|   	|   	|   	|   	|
+|---	|---	|---	|---	|---	|
+|   	|   	|   	|   	|   	|
+|   	|   	|   	|   	|   	|
+|   	|   	|   	|   	|   	|
+
 0: Density vs Radius          
 1: Radial Velocity vs Radius        
 2: Kinetic Energy vs Radius   
