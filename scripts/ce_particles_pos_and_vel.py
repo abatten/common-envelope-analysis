@@ -31,7 +31,7 @@ def read_inlist(ipath):
     initial_path = config.getint('Common Section', 'initial_path')
     final_path_plus_one = config.getint("Common Section", "final_path_plus_one")
     output_file_name = config.get("Position-Velocity Section", "output_file_name")
-    particle_number = config.getint("Position-Velocity Section", "particle_number")
+    particle_number = config.getint("Common Section", "particle_number")
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
@@ -110,9 +110,9 @@ def positions_velocities(directory, index, outfile):
                       common_envelope['particle_position_y'][primary_index] * length_unit1,
                       common_envelope['particle_position_z'][primary_index] * length_unit1]
 
-    primary_vel = [common_envelope['particle_velocity_x'][primary_index],
-                   common_envelope['particle_velocity_y'][primary_index],
-                   common_envelope['particle_velocity_z'][primary_index]]
+    primary_vel = [common_envelope['particle_velocity_x'][primary_index] * length_unit1,
+                   common_envelope['particle_velocity_y'][primary_index] * length_unit1,
+                   common_envelope['particle_velocity_z'][primary_index] * length_unit1]
 
 
     particle_indicies = common_envelope['particle_index']

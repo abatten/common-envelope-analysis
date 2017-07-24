@@ -42,7 +42,7 @@ def read_inlist(ipath):
     output_file_name = config.get('Energy Section', 'output_file_name')
     output_file_append = config.getboolean('Energy Section', 'output_file_append')
     use_smoothed_potential = config.getboolean('Energy Section', 'use_smoothed_potential')
-    smoothing_length = config.getfloat('Energy Section', 'smoothing_length')
+    smoothing_length = config.getfloat('Common Section', 'smoothing_length')
     select_primary = config.getboolean('Energy Section', 'select_primary')
 
     print("INLIST FILE: " + inlist_name)

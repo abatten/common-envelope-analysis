@@ -33,8 +33,8 @@ def read_inlist(ipath):
     output_file_name = config.get('Angular Momentum Section', 'output_file_name')
     output_file_append = config.getboolean('Angular Momentum Section', 'output_file_append')
     angular_momentum_wrt_com = config.getboolean("Angular Momentum Section", "angular_momentum_wrt_com")
-    smoothing_length = config.getfloat('Angular Momentum Section', 'smoothing_length')
-    particle_number = config.getint('Angular Momentum Section', 'particle_number')
+    smoothing_length = config.getfloat('Common Section', 'smoothing_length')
+    particle_number = config.getint('Common Section', 'particle_number')
 
 
 

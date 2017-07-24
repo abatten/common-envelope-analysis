@@ -30,7 +30,7 @@ def read_inlist(ipath):
     initial_path = config.getint('Common Section', 'initial_path')
     final_path_plus_one = config.getint("Common Section", "final_path_plus_one")
     output_file_name = config.get("Seperation Section", "output_file_name")
-    particle_number = config.getint("Seperation Section", "particle_number")
+    particle_number = config.getint("Common Section", "particle_number")
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
