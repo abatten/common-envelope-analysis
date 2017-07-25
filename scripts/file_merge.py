@@ -6,12 +6,12 @@ import sys
 import ConfigParser
 import glob
 
-directory = str(sys.argv[1])
-file_name = str(sys.argv[2])
+#directory = str(sys.argv[1])
+#file_name = str(sys.argv[2])
 
-#directory = '/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2/plots/'
+directory = '/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2/plots/'
 #file_name = 'energy_componets'
-
+file_name = "ce_mass_loss_three"
 output_file_name = 'combined_' + file_name + '_file.txt'
 
 print(" ")
@@ -27,12 +27,12 @@ file_numbers = []
 # Find the suffix number for each file
 for i in range(len(file_list)):
     file_numbers.append(file_list[i].split('_'))  #
-    file_numbers[i][2] = file_numbers[i][2][:-4]  # Remove .txt from the files
+    file_numbers[i][-1] = file_numbers[i][-1][:-4]  # Remove .txt from the files
 
 # Sort the files into the correct order
 dict = {}
 for i in range(len(file_list)):
-    dict[int(file_numbers[i][2])] = file_list[i]  # Associate the suffix number with the file
+    dict[int(file_numbers[i][-1])] = file_list[i]  # Associate the suffix number with the file
 
 # Write the combined output file
 out_file = open(directory + output_file_name, 'w')
