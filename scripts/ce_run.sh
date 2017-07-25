@@ -11,14 +11,13 @@ INLIST=inlist_ce_analysis_template.ini
 
 # Range depends on number of directories in path.
 # The FINAL_PATH is equal to the total number of directories.
-FINAL_PATH=136
+FINAL_PATH=142
 
 for i in $(seq 0 ${FINAL_PATH})
 do
     echo $i
     # Create a temp inlist for the python script to read
     ANALYSIS_FILE=$(mktemp ce_analysis.XXXXX)
-
     # Read the inlist file and change the variables
     cat $INLIST |
     sed "s/INITIAL_PATH/$i/" |
@@ -33,3 +32,7 @@ wait
 
 # Remove all the temp files after the script finishes.
 rm ce_analysis.*
+
+echo " "
+echo "FINISHED CE_RUN: " $SCRIPT
+echo " "
