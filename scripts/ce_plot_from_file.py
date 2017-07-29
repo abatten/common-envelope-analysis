@@ -15,7 +15,7 @@ def energy_plot(txt_file, smoothed, marked):
     # Find the location of the input file to save plot to.
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
     #smoothed = True
-    outfilename = "energy_components_total_final"
+    outfilename = "energy_components_plot"
 
     if smoothed:
         nan_list = np.isnan(data[:,6])
@@ -38,42 +38,52 @@ def energy_plot(txt_file, smoothed, marked):
 
             nan_list = np.isnan(data[:,6])
 
-        outfilename = outfilename + "_smooth_2"
+        outfilename = outfilename + "_smooth"
 
     ax = plt.subplot(111)
 
-    plt.plot(data[:,0], data[:,1], "k", linewidth=3.5, label = "Total Energy");
-    plt.plot(data[:,0], data[:,2], "b-", linewidth=1, label = "Total Kinetic Energy");
-    plt.plot(data[:,0], data[:,3], "g-", linewidth=1, label = "Total Potential Energy");
-    plt.plot(data[:,0], data[:,4], "r-" , linewidth=1, label = "Total Thermal Energy");
-    plt.plot(data[:,0], data[:,5], "b-.", label = "Gas Kinetic Energy");
-    plt.plot(data[:,0], data[:,6], "g-.", label = "G-G Potential Energy");
-    plt.plot(data[:,0], data[:,8], "b--" , label = "Particle Kinetic Energy");
-    plt.plot(data[:,0], data[:,9], "g--" , label = "P-P Potential Energy");
-    plt.plot(data[:,0], data[:,10], "g:" , label = "P-G Potential Energy")
+    ergs_unit = 10.0**46.0  # Normalising unit
 
-#    plt.ylim(-5e48, 1.5e48)
-    plt.ylim(-5e46,1.5e46)
-#    plt.xlim(0,14.5)
-    plt.xlabel('Time (yr)', fontsize=16)
-    plt.ylabel("Energy (ergs)", fontsize=16)
+    plt.plot(data[:,0], data[:,1]/ergs_unit, "k", linewidth=3.5,
+             label = r"$\mathrm{E_{Total}}$")
+    plt.plot(data[:,0], data[:,2]/ergs_unit, "b-", 
+             label = r"$\mathrm{K_{Total}}$")
+    plt.plot(data[:,0], data[:,3]/ergs_unit, "g-", 
+             label = r"$\phi_{\mathrm{Total}}$");
+    plt.plot(data[:,0], data[:,4]/ergs_unit, "r-", 
+             label = r"$\mathrm{U_{Total}}$")
+    plt.plot(data[:,0], data[:,5]/ergs_unit, "cyan", 
+             label = r"$\mathrm{K_{Gas}}$")
+    plt.plot(data[:,0], data[:,8]/ergs_unit, "magenta", 
+             label = r"$\mathrm{K_{Particles}}$")
+    plt.plot(data[:,0], data[:,6]/ergs_unit, "gold", 
+             label = r"$\phi_{\mathrm{GG}}$")
+    plt.plot(data[:,0], data[:,9]/ergs_unit, "hotpink", 
+             label = r"$\phi_{\mathrm{PP}}$")
+    plt.plot(data[:,0], data[:,10]/ergs_unit, "purple", 
+             label = r"$\phi_{\mathrm{PG}}$")
+
+    plt.ylim(-5,1.5)  # Change to make look good
+    plt.xlim(0,14.5)  # Time axis
+    plt.xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
+    plt.ylabel(r"$\mathrm{Energy}\ (10^{46}\ \mathrm{ergs})$", fontsize=20)
 
     if marked:
         for i in range(len(marked)):
             plt.axvline(x=marked[i], ymin=0, ymax=1, linewidth=1, color='k')
 
         outfilename = outfilename + "_marked"
-
-    plt.legend(loc='lower left', frameon=False)
+    plt.tight_layout()
+    plt.legend(ncol=3, loc='lower left', frameon=False)
     plt.savefig(plot_loc + outfilename + ".png")
     plt.savefig(plot_loc + outfilename + ".svg") 
     plt.show()
 
 def seperation_plot(txt_file, marked):
     data = genfromtxt(txt_file, skip_header=1);
+
     # Find the location of the input file to save plot to.
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
-
 
     outfilename = "seperations_jstaff_sim2_part2"
     yr = 365.25 * 24 * 60 * 60
@@ -103,9 +113,9 @@ def thermal_plot(txt_file, marked):
     outfilename = "thermal_components"
 
     ax = plt.subplot(111)
-    plt.plot(data[:,0], data[:,4], linewidth=1, label = "Total Thermal");
-    plt.plot(data[:,0], data[:,12], linewidth=1, label = "Primary Thermal");
-    plt.plot(data[:,0], data[:,13], linewidth=1, label = "Vacuum Thermal");
+    plt.plot(data[:,0], data[:,4], linewidth=1, label = "Total Thermal")
+    plt.plot(data[:,0], data[:,12], linewidth=1, label = "Primary Thermal")
+    plt.plot(data[:,0], data[:,13], linewidth=1, label = "Vacuum Thermal")
 
 #    plt.ylim(-2e46,1.5e46)
 #    plt.xlim(0,14.5)
@@ -147,9 +157,9 @@ def mass_loss_plot(txt_file, marked):
 
 #    plt.ylim(-2e46,1.5e46)
 #    plt.xlim(0,14.5)
-    ax1.set_xlabel("Time " + r"[$\mathrm{yr}$]", fontsize=16)
-    ax1.set_ylabel("Mass " + r"[$\mathrm{M}_\odot$]", fontsize=16)
-    ax2.set_ylabel("Mass loss rate " + r"[$\mathrm{M}_\odot/\mathrm{yr}$]", fontsize=16)
+    ax1.set_xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
+    ax1.set_ylabel(r"$\mathrm{Mass}\ (\mathrm{M}_\odot)$", fontsize=20)
+    ax2.set_ylabel(r"$\mathrm{Mass loss rate}\ (\mathrm{M}_\odot/\mathrm{yr})$", fontsize=20)
 
 
     if marked:
