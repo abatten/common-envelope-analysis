@@ -152,15 +152,17 @@ def mass_loss_plot(txt_file, marked):
         # Mass-loss rate = dM/dt
         mass_loss_rate.append(mass_diff/time_diff)
 
-    ax1.plot(data[:,0], data[:,1], 'b', linewidth=1, label = "Envelope Mass");
-    ax2.plot(data[:-1,0], mass_loss_rate,'r', linewidth=1, label = "Mass loss rate");
+    ax1.plot(data[:,0], data[:,1], 'b', 
+             label = r"$\mathrm{M_{env}}$");
+    ax2.plot(data[:-1,0], mass_loss_rate,'r', 
+             label = r"$\mathrm{\dot{M}_{env}}$");
 
 #    plt.ylim(-2e46,1.5e46)
-#    plt.xlim(0,14.5)
+    plt.xlim(0,14.5)
     ax1.set_xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
     ax1.set_ylabel(r"$\mathrm{Mass}\ (\mathrm{M}_\odot)$", fontsize=20)
-    ax2.set_ylabel(r"$\mathrm{Mass loss rate}\ (\mathrm{M}_\odot/\mathrm{yr})$", fontsize=20)
-
+    ax2.set_ylabel(r"$\mathrm{Mass\ loss\ rate}\ (\mathrm{M}_\odot/\mathrm{yr})$", fontsize=20)
+    ax1.set_ylim(0.2,0.35)
 
     if marked:
         for i in range(len(marked)):
@@ -170,7 +172,7 @@ def mass_loss_plot(txt_file, marked):
 
     h1, l1 = ax1.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
-    ax1.legend(h1+h2, l1+l2, loc='best', frameon=False)
+    ax1.legend(h1+h2, l1+l2, loc='best', prop={'size':18}, frameon=False)
     plt.tight_layout()
     plt.savefig(plot_loc + outfilename + ".png")
     plt.show()
@@ -214,7 +216,8 @@ def position_and_velocities_plot(txt_file):
     for row in axes:
         for index in range(num_particles): 
             if irow == 0:
-                mat0[:, (index+1)*6] = (mat0[:, (index+1)*6] - mat0[0, (index+1)*6] ) / AU
+                mat0[:, (index+1)*6] = ((mat0[:, (index + 1) * 6] -
+                                         mat0[0, (index + 1 )* 6]) / AU)
                 row[0].set_ylabel("$\mathrm{Z-displacement\ (AU)}$")
                 #row[0].set_yticks(np.arange(mat0[10,6], 1.5*np.max(mat0[:, (index+1)*6])))
 
@@ -260,7 +263,7 @@ if __name__ == "__main__":
                         help="Create a plot of the thermal energies from the \
                         specified file", action="store_true")
     parser.add_argument("--massloss", 
-                        help="Create a plot of the mass loss and the mass loss \
+                        help="Create a plot of the mass loss & the mass loss \
                         rate from the specified file", action="store_true")
     parser.add_argument("--posvel", 
                         help="Create plots of the positions and velocities \
