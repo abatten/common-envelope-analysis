@@ -9,7 +9,7 @@ import os
 import sys
 import ConfigParser
 
-import modules.cefunctions as cef
+import cemodules.cefunctions as cef
 
 mylog.disabled = True
 
@@ -88,22 +88,23 @@ def SelectPrimary(field, data):
 		
 	# Determine the size of the smallest cell for the smoothing length
         smallest_cell_length =  data.pf.h.get_smallest_dx() * length_unit1
-        radius_particle = dict()
         current_Epot_particle = dict()
 
+        gas_coords = (data['x'], data['y'], data['z'])
         for i in range(len(box['particle_index'])):
-
-            data_coords = (data['x'], data['y'], data['z'])
+            gas_coords = (data['x'], data['y'], data['z'])
             particle_coords = (box['particle_position_x'][i], 
                                box['particle_position_y'][i], 
                                box['particle_position_z'][i])
 	   
             # Calculate the distance the gas is from the particle.
-            radius_part = cef.distance(data_coords, particle_coords, length_unit1)
+            radius_part = cef.distance(gas_coords, particle_coords, length_unit1)
 		
 	    # Smoothed Gravitational Potential
 	    # See M. Ruffert 1993
-	    current_Epot_particle[i] = cef.grav_pot(box['ParticleMass'][i], data['CellMass'], radius_part, use_smoothed_potential, smoothing_length, smallest_cell_length)	
+	    current_Epot_particle[i] = cef.grav_pot(box['ParticleMass'][i], data['CellMass'], 
+                                                    radius_part, use_smoothed_potential, 
+                                                    smoothing_length, smallest_cell_length)	
         
         current_Epot_part_to_gas = 0
 	for i in range(len(box['particle_index'])):

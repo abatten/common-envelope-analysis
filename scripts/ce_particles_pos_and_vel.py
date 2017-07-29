@@ -9,7 +9,7 @@ import os
 import sys
 import ConfigParser
 
-import modules.cefunctions as cef
+import cemodules.cefunctions as cef
 
 mylog.disabled = True
 

@@ -9,7 +9,7 @@ import os
 import sys
 import ConfigParser
 
-import modules.cefunctions as cef
+import cemodules.cefunctions as cef
 
 mylog.disabled = True
 
@@ -235,11 +235,6 @@ def ce_angular_momentum(directory, index, output_file):
             else:
                 pass
         
-
-        
-
-            
-
         # Primary Envelope
         gx = primary["x"] * length_unit1
         gy = primary["y"] * length_unit1

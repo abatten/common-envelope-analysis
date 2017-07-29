@@ -7,7 +7,7 @@ from pylab import genfromtxt
 import ConfigParser
 import argparse
 
-import modules.cefunctions as cef
+import cemodules.cefunctions as cef
 
 def energy_plot(txt_file, smoothed, marked):
     data = genfromtxt(txt_file, skip_header=1);
@@ -20,12 +20,14 @@ def energy_plot(txt_file, smoothed, marked):
     if smoothed:
         nan_list = np.isnan(data[:,6])
         while True in nan_list:
-            # Find NaNs in gas potential and replace with average of previous and following value
+            # Find NaNs in gas potential and replace with 
+            # average of previous and following value
             for i in range(len(data[:,6])-1):
-                if np.isnan(data[i,6]) and  not np.isnan(data[i+1,6]): # If next number isn't nan, average.
+                # If next number isn't nan then average.
+                if np.isnan(data[i,6]) and  not np.isnan(data[i+1,6]):
                     data[i,6] = 0.5 * (data[i+1,6] + data[i-1,6])
-
-                elif np.isnan(data[i,6]) & np.isnan(data[i+1,6]): # If next number is nan, use previous.
+                # If next number is nan, use previous
+                elif np.isnan(data[i,6]) & np.isnan(data[i+1,6]): 
                     data[i,6] = data[i-1,6]
             # Recalculate total potential energy
             for i in range(len(data[:,3])):
@@ -38,34 +40,17 @@ def energy_plot(txt_file, smoothed, marked):
 
         outfilename = outfilename + "_smooth_2"
 
-    nospikes = False
-
     ax = plt.subplot(111)
 
-    if nospikes:
-        spike_list = [False] * len(data[:,6])
-        for i in range(len(data[:,6])-1):
-            if abs((data[i+1,6] - data[i,6])/data[i,6]) > 2:
-                spike_list[i+1] = True
- 
-        for i in range(len(spike_list)):
-            if spike_list[i] == True:
-                print(data[i+1,0])
-                plt.axvline(x=data[i,0], ymin=0, ymax=1, linewidth=1, color='k')
-
-        print(spike_list)
-
-#   ax = plt.subplot(111)
-
-    plt.plot(data[:,0], data[:,1], 'black', linewidth=3.5, label = "Total");
-    plt.plot(data[:,0], data[:,2], linewidth=1, label = "Total Kinetic");
-    plt.plot(data[:,0], data[:,3], linewidth=1, label = "Total Potential");
-    plt.plot(data[:,0], data[:,4], linewidth=1, label = "Total Thermal");
-    #plt.plot(data[:,0], data[:,5], label = "Gas Kinetic");
-    plt.plot(data[:,0], data[:,6], label = "G-G Potential");
-    #plt.plot(data[:,0], data[:,8], label = "Particle Kinetic");
-    plt.plot(data[:,0], data[:,9], label = "P-P Potential");
-    plt.plot(data[:,0], data[:,10], label = "P-G Potential")
+    plt.plot(data[:,0], data[:,1], "k", linewidth=3.5, label = "Total Energy");
+    plt.plot(data[:,0], data[:,2], "b-", linewidth=1, label = "Total Kinetic Energy");
+    plt.plot(data[:,0], data[:,3], "g-", linewidth=1, label = "Total Potential Energy");
+    plt.plot(data[:,0], data[:,4], "r-" , linewidth=1, label = "Total Thermal Energy");
+    plt.plot(data[:,0], data[:,5], "b-.", label = "Gas Kinetic Energy");
+    plt.plot(data[:,0], data[:,6], "g-.", label = "G-G Potential Energy");
+    plt.plot(data[:,0], data[:,8], "b--" , label = "Particle Kinetic Energy");
+    plt.plot(data[:,0], data[:,9], "g--" , label = "P-P Potential Energy");
+    plt.plot(data[:,0], data[:,10], "g:" , label = "P-G Potential Energy")
 
 #    plt.ylim(-5e48, 1.5e48)
     plt.ylim(-5e46,1.5e46)
@@ -81,6 +66,7 @@ def energy_plot(txt_file, smoothed, marked):
 
     plt.legend(loc='lower left', frameon=False)
     plt.savefig(plot_loc + outfilename + ".png")
+    plt.savefig(plot_loc + outfilename + ".svg") 
     plt.show()
 
 def seperation_plot(txt_file, marked):
@@ -116,9 +102,7 @@ def thermal_plot(txt_file, marked):
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
     outfilename = "thermal_components"
 
-
     ax = plt.subplot(111)
-
     plt.plot(data[:,0], data[:,4], linewidth=1, label = "Total Thermal");
     plt.plot(data[:,0], data[:,12], linewidth=1, label = "Primary Thermal");
     plt.plot(data[:,0], data[:,13], linewidth=1, label = "Vacuum Thermal");
@@ -151,19 +135,21 @@ def mass_loss_plot(txt_file, marked):
 
     mass_loss_rate = []
     for i in range(len(data[:,1])-1):
+        # Calculate the change in mass
         mass_diff = data[i,1] - data[i+1,1]
+        # Calculate the change in time
         time_diff = data[i+1,0] - data[i,0]
-
+        # Mass-loss rate = dM/dt
         mass_loss_rate.append(mass_diff/time_diff)
 
-    ax1.plot(data[:,0], data[:,1], 'b', linewidth=1, label = "Mass");
+    ax1.plot(data[:,0], data[:,1], 'b', linewidth=1, label = "Envelope Mass");
     ax2.plot(data[:-1,0], mass_loss_rate,'r', linewidth=1, label = "Mass loss rate");
 
 #    plt.ylim(-2e46,1.5e46)
 #    plt.xlim(0,14.5)
-    ax1.set_xlabel("Time " + r"($\mathrm{yr}$)", fontsize=16)
-    ax1.set_ylabel("Mass "+r"($M_\odot$)", fontsize=16)
-    ax2.set_ylabel("Mass loss rate " +r"($M_\odot/\mathrm{yr}$)", fontsize=16)
+    ax1.set_xlabel("Time " + r"[$\mathrm{yr}$]", fontsize=16)
+    ax1.set_ylabel("Mass " + r"[$\mathrm{M}_\odot$]", fontsize=16)
+    ax2.set_ylabel("Mass loss rate " + r"[$\mathrm{M}_\odot/\mathrm{yr}$]", fontsize=16)
 
 
     if marked:
@@ -243,15 +229,32 @@ def position_and_velocities_plot(txt_file):
 if __name__ == "__main__":
 # Command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("--energy", help="Create a plot of the energies from the specified file", action="store_true")
-    parser.add_argument("--smoothed", help="Create a smoothed energy plot by replacing NaN's with the average of the values on either side,", action="store_true")
-    parser.add_argument("--marked", help="Create a marked energy plot by adding vertical lines at x positions. e.g --marked 0 0.1 2 3", type=float, nargs="+")  
-    parser.add_argument("--seperation", help="Create a plot of the seperations from the specified file", action="store_true")
-    parser.add_argument("--angularmomentum", help="Create a plot of the angular momentum from the specified file", action="store_true")
-    parser.add_argument("--thermal", help="Create a plot of the thermal energies from the specified file", action="store_true")
-    parser.add_argument("--massloss", help="Create a plot of the mass loss and the mass loss rate from the specified file", action="store_true")
-    parser.add_argument("--posvel", help="Create plots of the positions and velocities of all the particles", action="store_true")
-
+    parser.add_argument("--energy", 
+                       help="Create a plot of the energies from the \
+                       specified file", action="store_true")
+    parser.add_argument("--smoothed",
+                       help="Create a smoothed energy plot by replacing NaN's \
+                       with the average of the values on either side,", 
+                       action="store_true")
+    parser.add_argument("--marked", 
+                        help="Create a marked energy plot by adding vertical \
+                        lines at x positions. e.g --marked 0 0.1 2 3", 
+                        type=float, nargs="+")  
+    parser.add_argument("--seperation", 
+                        help="Create a plot of the seperations from the \
+                        specified file", action="store_true")
+    parser.add_argument("--angularmomentum", 
+                        help="Create a plot of the angular momentum \
+                        from the specified file", action="store_true")
+    parser.add_argument("--thermal", 
+                        help="Create a plot of the thermal energies from the \
+                        specified file", action="store_true")
+    parser.add_argument("--massloss", 
+                        help="Create a plot of the mass loss and the mass loss \
+                        rate from the specified file", action="store_true")
+    parser.add_argument("--posvel", 
+                        help="Create plots of the positions and velocities \
+                        of all the particles", action="store_true")
     parser.add_argument("txts", help="The text files to read.")
 
 
