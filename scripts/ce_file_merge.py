@@ -10,8 +10,9 @@ import glob
 #file_name = str(sys.argv[2])
 
 directory = '/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2/plots/'
-#file_name = 'energy_componets'
-file_name = "ce_mass_loss_three"
+#directory = "/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2_mass_added/"
+file_name = 'energy_components_fixed'
+#file_name = "ce_mass_loss_three"
 output_file_name = 'combined_' + file_name + '_file.txt'
 
 print(" ")
