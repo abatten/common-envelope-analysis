@@ -12,14 +12,14 @@ plot_dir = '/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2/plots/'
 root_dir = '/disks/ceres/makemake/acomp/jstaff/raijin/enzoamr-2.3/1Moz0.02late-2/128/4levels/2part/run210Mj/'
 
 #directory_list = ['DD0170/CE0170','DD0190/CE0190', 'DD0200/CE0200', 'DD0210/CE0210', 'DD0220/CE0220', 'DD0230/CE0230', 'DD0240/CE0240', 'DD0250/CE0250','DD0260/CE0260' ]
-directory_list = ['DD0000/CE0008','DD0005/CE0005', 'DD0015/CE0015', 
-                  'DD0020/CE0020', 'DD0025/CE0025', 'DD0030/CE0030', 
-                  'DD0035/CE0035', 'DD0060/CE0060','DD0140/CE0140']
+directory_list = ['DD0000/CE0008','DD0010/CE0010', 'DD0020/CE0020', 
+                  'DD0025/CE0025', 'DD0030/CE0030','DD0040/CE0040',
+                  'DD0050/CE0050', 'DD0060/CE0060']
 
 fig = plt.figure()
 
 grid = AxesGrid(fig, (0.075,0.075,0.85,0.85),
-                nrows_ncols = (3, 3),
+                nrows_ncols = (4, 2),
                 axes_pad = 0.05,
                 label_mode = "L",
                 share_all = True,
@@ -31,11 +31,11 @@ grid = AxesGrid(fig, (0.075,0.075,0.85,0.85),
 for i, directory_list in enumerate(directory_list):
     # Load the data and create a single plot
     ds = load(root_dir + directory_list) # load data
-    pf = SlicePlot(ds, 'x', 'Density')
-    pf.annotate_velocity(factor=16, normalize=False)
+    pf = SlicePlot(ds, 'z', 'Density')
+#    pf.annotate_velocity(factor=16, normalize=False)
     #pf.annotate_streamlines('particle_velocity_x', 'particle_velocity_y')
     pf.annotate_particles(1.0, p_size=25.0, marker='o', col='black')
-    pf.annotate_text((0.1,0.88), "t = " + str("{0:.2f}".format(ds.current_time)) + "yr")
+    pf.annotate_text((0.1,0.88), "t = " + str("{0:.2f}".format(ds.current_time)) + "yr", text_args={'color':'white'})
 
     # Ensure the colorbar limits match for all plots
     pf.set_zlim('Density', 1e-12, 1e-4)
@@ -49,5 +49,5 @@ for i, directory_list in enumerate(directory_list):
     # Finally, this actually redraws the plot.
     pf._setup_plots()
 
-plt.savefig(plot_dir+'multiplot_3x3_x_density_array_jstaff.png')
+plt.savefig('multiplot_4x2_z_density_array_jstaff.png', bbox_inches='tight',pad_inches=0)
 plt.show()
