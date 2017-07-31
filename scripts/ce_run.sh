@@ -11,7 +11,7 @@ INLIST=inlist_ce_analysis_template.ini
 
 # Range depends on number of directories in path.
 # The FINAL_PATH is equal to the total number of directories.
-FINAL_PATH=142
+FINAL_PATH=176
 
 for i in $(seq 0 ${FINAL_PATH})
 do
@@ -26,7 +26,7 @@ do
 
     # Run the script for each directory at the same time.
     # /dev/null 2>&1 causes no output to be displayed.
-    python $SCRIPT "$ANALYSIS_FILE" > /dev/null 2>&1 &
+    nice -n 19 python $SCRIPT "$ANALYSIS_FILE" > /dev/null 2>&1 &
 done
 wait
 
