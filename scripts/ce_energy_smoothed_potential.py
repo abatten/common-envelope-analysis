@@ -189,7 +189,13 @@ def ce_energies(directory, index, file):
     # GAS POTENTIAL ENERGY
     if (pf.parameters['SelfGravity'] == 1):
 
-        current_Epot_gas = np.sum(0.5 * common_envelope['Grav_Potential']  * (length_unit1/time_unit1)**2.0 * common_envelope['CellMass'])
+        #current_Epot_gas = np.sum(0.5 * common_envelope['Grav_Potential']  * (length_unit1/time_unit1)**2.0 * common_envelope['CellMass'])
+
+        Epot_gas_running = 0
+        for i in range(len(common_envelope['Grav_Potential'])):
+            if common_envelope['Grav_Potential'][i] <= 0:
+                Epot_gas_running += common_envelope['Grav_Potential'][i] * (length_unit1/time_unit1)**2.0 * common_envelope["CellMass"][i]
+        current_Epot_gas = 0.5 * Epot_gas_running
     else:
         current_Epot_gas = 0.0
 
