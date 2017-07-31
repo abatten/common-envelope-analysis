@@ -86,14 +86,14 @@ def positions_velocities(directory, index, outfile):
     # Adds the whole data as an object called common_envelope. 
     # It is an array and you can acces the data by 
     # knowing their name through: common_envelope["Dataname"]:
-    common_envelope = pf.h.all_data()
+    ce = pf.h.all_data()
 
     if (index == initial_path):
         current_cycle = 0
     else:
         current_cycle = pf.parameters['InitialCycleNumber']
 
-    particle_masses = common_envelope['ParticleMassMsun']
+    particle_masses = ce['ParticleMassMsun']
     
     # The core of the primary has the largest mass
     primary_mass = np.max(particle_masses)
@@ -106,29 +106,28 @@ def positions_velocities(directory, index, outfile):
             pass
     print("Primary Index: ", primary_index)
 
-    primary_coords = [common_envelope['particle_position_x'][primary_index] * length_unit1,
-                      common_envelope['particle_position_y'][primary_index] * length_unit1,
-                      common_envelope['particle_position_z'][primary_index] * length_unit1]
+    primary_coords = [ce['particle_position_x'][primary_index] * length_unit1,
+                      ce['particle_position_y'][primary_index] * length_unit1,
+                      ce['particle_position_z'][primary_index] * length_unit1]
 
-    primary_vel = [common_envelope['particle_velocity_x'][primary_index] * length_unit1,
-                   common_envelope['particle_velocity_y'][primary_index] * length_unit1,
-                   common_envelope['particle_velocity_z'][primary_index] * length_unit1]
+    primary_vel = [ce['particle_velocity_x'][primary_index] * length_unit1,
+                   ce['particle_velocity_y'][primary_index] * length_unit1,
+                   ce['particle_velocity_z'][primary_index] * length_unit1]
 
-
-    particle_indicies = common_envelope['particle_index']
+    particle_indicies = ce['particle_index']
     print(particle_indicies)
 
     coords = {}
     vels = {}
     for i in range(particle_number):
         if i != primary_index:
-            companion_coords = [str(common_envelope['particle_position_x'][i] * length_unit1),
-                                str(common_envelope['particle_position_y'][i] * length_unit1),
-                                str(common_envelope['particle_position_z'][i] * length_unit1)]
+            companion_coords = [str(ce['particle_position_x'][i] * length_unit1),
+                                str(ce['particle_position_y'][i] * length_unit1),
+                                str(ce['particle_position_z'][i] * length_unit1)]
 
-            companion_vels = [str(common_envelope['particle_velocity_x'][i] * length_unit1),
-                              str(common_envelope['particle_velocity_y'][i] * length_unit1),
-                              str(common_envelope['particle_velocity_z'][i] * length_unit1)]
+            companion_vels = [str(ce['particle_velocity_x'][i] * length_unit1),
+                              str(ce['particle_velocity_y'][i] * length_unit1),
+                              str(ce['particle_velocity_z'][i] * length_unit1)]
        
 
             coords[particle_indicies[i]] = companion_coords
