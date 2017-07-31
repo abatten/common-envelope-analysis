@@ -46,21 +46,21 @@ def energy_plot(txt_file, smoothed, marked):
 
     plt.plot(data[:,0], data[:,1]/ergs_unit, "k", linewidth=3.5,
              label = r"$\mathrm{E_{Total}}$")
-    plt.plot(data[:,0], data[:,2]/ergs_unit, "b-", 
+    plt.plot(data[:,0], data[:,2]/ergs_unit, "#377eb8", 
              label = r"$\mathrm{K_{Total}}$")
-    plt.plot(data[:,0], data[:,3]/ergs_unit, "g-", 
+    plt.plot(data[:,0], data[:,3]/ergs_unit, "#4daf4a", 
              label = r"$\phi_{\mathrm{Total}}$");
-    plt.plot(data[:,0], data[:,4]/ergs_unit, "r-", 
+    plt.plot(data[:,0], data[:,4]/ergs_unit, "#e41a1c", 
              label = r"$\mathrm{U_{Total}}$")
-    plt.plot(data[:,0], data[:,5]/ergs_unit, "cyan", 
+    plt.plot(data[:,0], data[:,5]/ergs_unit, "#f781bf", 
              label = r"$\mathrm{K_{Gas}}$")
-    plt.plot(data[:,0], data[:,8]/ergs_unit, "magenta", 
+    plt.plot(data[:,0], data[:,8]/ergs_unit, "#984ea3", 
              label = r"$\mathrm{K_{Particles}}$")
-    plt.plot(data[:,0], data[:,6]/ergs_unit, "gold", 
+    plt.plot(data[:,0], data[:,6]/ergs_unit, "#CCCC00", 
              label = r"$\phi_{\mathrm{GG}}$")
-    plt.plot(data[:,0], data[:,9]/ergs_unit, "hotpink", 
+    plt.plot(data[:,0], data[:,9]/ergs_unit, "#ff7f00", 
              label = r"$\phi_{\mathrm{PP}}$")
-    plt.plot(data[:,0], data[:,10]/ergs_unit, "purple", 
+    plt.plot(data[:,0], data[:,10]/ergs_unit, "#a65628", 
              label = r"$\phi_{\mathrm{PG}}$")
 
     plt.ylim(-5,1.5)  # Change to make look good
