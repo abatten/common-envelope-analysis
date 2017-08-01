@@ -53,7 +53,7 @@ def open_file(file_name, num_particles):
     # Create header based on the number of particles
     dict = {}
     for i in range(num_particles-1):
-       dict[str(i+1)] = "Seperation_%s_%s" % ("Companion", i+1)
+       dict[str(i+1)] = "Seperation_%s_%s" % ("Companion", i+1) + " (cm)"
        header = ", ".join([header, dict[str(i+1)]])
     
     # Write the first line of information in the file
