@@ -155,19 +155,15 @@ def ce_gravodrag(directory, index, outfile):
     else:
         pass
 
-    #  Get positions and velocities of companions
+    #  Get positions of companions
     for i in range(particle_number):
         if i != prim_index:  #  Ignore Primary as already done
             coord = [ce['particle_position_x'][i] * length_unit1,
                            ce['particle_position_y'][i] * length_unit1,
                            ce['particle_position_z'][i] * length_unit1]
-            vel = [ce['particle_velocity_x'][i] ,
-                        ce['particle_velocity_x'][i],
-                        ce['particle_velocity_x'][i]] 
 
             #  Assign values to dictionary
             comp_coords[pdex[i]] = coord
-            comp_velocity[pdex[i]] = vel
 
     # Gravodrag = xi * pi * accretion_rad**2 * density * relative_vel**3
 
@@ -175,7 +171,7 @@ def ce_gravodrag(directory, index, outfile):
     velocity_in_cell = {}
     relative_velocity = {}
     accretion_radius = {}
-    sound_speed = {}
+    sound_speed_in_cell = {}
     comp_mass = {}
 
     for i in range(particle_number):
@@ -194,28 +190,31 @@ def ce_gravodrag(directory, index, outfile):
                                                            "y-velocity",
                                                            "z-velocity"],
                                                            code_coords)
-            velocity = [ce["particle_velocity_x"][pdex[i]],
+            part_velocity = [ce["particle_velocity_x"][pdex[i]],
                         ce["particle_velocity_y"][pdex[i]],
                         ce["particle_velocity_z"][pdex[i]]]
 
             velocity_in_cell[pdex[i]] = gas_velocity
-            comp_velocity[pdex[i]] = velocity
+            comp_velocity[pdex[i]] = part_velocity
             relative_velocity[pdex[i]] = [x-y for x,y in 
-                                          zip(velocity, gas_velocity)]
+                                          zip(part_velocity, gas_velocity)]
 
+
+            #  PART 3: ACCRETION RADIUS
+            #  accretion_radius = 2 * G * Mass / rel_vel**2 + sound_speed**2
+            
+            #  Find the sound speed in the cell
+            sound_speed = pf.h.find_field_value_at_point(["SoundSpeed"], 
+                                                          code_coords)
+            sound_speed_in_cell[pdex[i]] = sound_speed
+            rel_vel_mag = np.linalg.norm(relative_velocity[pdex[i]])
+            print(rel_vel_mag)            
 
 
     print("Density In Cell: ", density_in_cell)
     print("Gas Velocity: ", velocity_in_cell) 
     print("Comp Velocity: ", comp_velocity)
     print("Relative Velocity: ", relative_velocity)
-    #  accretion_radius = 2 * G * Mass / relative_velocity**2 + sound_speed**2
-    for i in range(particle_number):
-        if i != prim_index:
-            # Convert to code coordinates
-            code_coords = [x/length_unit1 for x in comp_coords[pdex[i]]]
-            # FInd the sound spee
-
 
 
     #  PART 4: XI
