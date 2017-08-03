@@ -85,7 +85,7 @@ def positions_velocities(directory, index, outfile):
 
     # Adds the whole data as an object called common_envelope. 
     # It is an array and you can acces the data by 
-    # knowing their name through: common_envelope["Dataname"]:
+    # knowing their name through: ce["Dataname"]:
     ce = pf.h.all_data()
 
     if (index == initial_path):
