@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import ConfigParser
 
 import cemodules.cefunctions as cef
+import cemodules.constants as const
 
 mylog.disabled = True  
 
@@ -30,7 +31,7 @@ def read_inlist(ipath):
     inlist_name = ipath.split("/")[-1] 
     config = ConfigParser.ConfigParser()
     config.readfp(open(inlist_name, "r"))
- 
+        inlist_
     #  The directory of all the enzo outputs
     root_dir = config.get("Common Section", "root_dir") 
     #  Directories to exclude from reading
@@ -143,8 +144,9 @@ def ce_gravodrag(directory, index, outfile):
 
     #  Get the indicies of the particles. i.e track specific particles
     pdex = ce["particle_index"]
+
+    #  Check that there is the correct number of particles
     comp_coords = {}
-    
     if len(pdex) != particle_number:
         print("ERROR")
         print("More particles in simulation than expecting!")
@@ -164,8 +166,7 @@ def ce_gravodrag(directory, index, outfile):
             #  Assign values to dictionary
             comp_coords[pdex[i]] = coord
 
-    # Gravodrag = xi * pi * accretion_rad**2 * density * relative_vel**3
-
+    #  Gravodrag = xi * pi * accretion_rad**2 * density * relative_vel**3
     density_in_cell = {}
     velocity_in_cell = {}
     comp_velocity = {}
@@ -181,7 +182,9 @@ def ce_gravodrag(directory, index, outfile):
 
             #  PART 1: AVERAGE DENSITY
             #  Find the density at the position of the companion 
-            density = pf.h.find_field_value_at_point(['Density'], code_coords)
+            #  Returns an array so take the [0] element
+            density = pf.h.find_field_value_at_point(['Density'], 
+                                                     code_coords)[0]
             density_in_cell[pdex[i]] = density
 
             #  PART 2: AVERAGE RELATIVE VELOCITY
@@ -203,30 +206,31 @@ def ce_gravodrag(directory, index, outfile):
             #  accretion_radius = 2 * G * Mass / rel_vel**2 + sound_speed**2
             
             #  Find companion mass            
-            comp_mass[pdex[i]] = particle_masses[i]
+            #  const.YMSUN converts mass from solar masses to g
+            comp_mass[pdex[i]] = particle_masses[i] * const.YMSUN
 
             #  Find the sound speed in the cell
-            sound_speed = pf.h.find_field_value_at_point(["SoundSpeed"], 
-                                                          code_coords)
+            #  Returns an array so take the [0] element
+            sound_speed = pf.h.find_field_value_at_point("SoundSpeed", 
+                                                          code_coords)[0]
             sound_speed_in_cell[pdex[i]] = sound_speed
 
             #  Calculate magnitude of the relative velocity
             rel_vel_mag = np.linalg.norm(relative_velocity[pdex[i]])
-
             #  Calculate the accretion radius
-            accretion_radius[pdex[i]] = (2.0 * 6.67e-8 * comp_mass[pdex[i]] /
+            accretion_radius[pdex[i]] = (2.0 * const.YG * comp_mass[pdex[i]] /
                                         (rel_vel_mag**2.0 
                                         + sound_speed_in_cell[pdex[i]]) )
-            print(accretion_radius)
 
+            print("Comp Velocity Mag:" , ce["ParticleVelocityMagnitude"][pdex[i]]) 
 
-
-
-    print("Density In Cell: ", density_in_cell)
-    print("Gas Velocity: ", velocity_in_cell) 
-    print("Comp Velocity: ", comp_velocity)
-    print("Relative Velocity: ", relative_velocity)
-
+    print("Accretion Radius (cm):", accretion_radius)
+    print("Comp Mass (g)" , comp_mass)
+    print("Density in Cell (g/cm^3): ", density_in_cell)
+    print("Gas Velocity (cm/s): ", velocity_in_cell) 
+    print("Comp Velocity (cm/s): ", comp_velocity)
+    print("Relative Velocity (cm/s): ", relative_velocity)
+    print("Sound Speed in Cell (cm/s): ", sound_speed_in_cell)
 
     #  PART 4: XI
     
@@ -267,4 +271,3 @@ if __name__ == "__main__":
     print("<-------------->")  
     print("FINISHED: CE_GRAVODRAG") 
     print("<-------------->") 
- 
