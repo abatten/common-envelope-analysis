@@ -31,7 +31,6 @@ def read_inlist(ipath):
     inlist_name = ipath.split("/")[-1] 
     config = ConfigParser.ConfigParser()
     config.readfp(open(inlist_name, "r"))
-        inlist_
     #  The directory of all the enzo outputs
     root_dir = config.get("Common Section", "root_dir") 
     #  Directories to exclude from reading
@@ -44,7 +43,7 @@ def read_inlist(ipath):
     final_path_plus_one = config.getint("Common Section", 
                                         "final_path_plus_one")
     #  The number of particles in the simulation
-    particle_number =config.getint("Common Section", "particle_number")
+    particle_number = config.getint("Common Section", "particle_number")
     #  The name of the output text file
     output_file_name = config.get("Gravodrag Section", "output_file_name")
     #  Append to the bottom of the text file or create new?
@@ -61,7 +60,8 @@ def read_inlist(ipath):
     print("OUTPUT FILE NAME: " + str(output_file_name))
     print("OUTPUT FILE APPEND: " + str(output_file_append))
 
-    return(root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one,           particle_number, output_file_name, output_file_append)
+    return(root_dir, exclude_dir, plot_dir, initial_path, final_path_plus_one, 
+           particle_number, output_file_name, output_file_append)
 
 
 def open_file(file_name, append, particle_number):
@@ -111,9 +111,9 @@ def ce_gravodrag(directory, index, outfile):
     pf = load(directory) 
 
     #  Get the length, time and mass units used
-    length_unit1 = pf.parameters["LengthUnits"]
-    time_unit1 = pf.parameters["TimeUnits"]
-    mass_unit1 = pf.parameters["MassUnits"]
+    lu = pf.parameters["LengthUnits"]
+    tu = pf.parameters["TimeUnits"]
+    mu = pf.parameters["MassUnits"]
     
     #  Current cycle and current time will be written in the out_file
     current_time = pf.current_time                                    
@@ -159,10 +159,9 @@ def ce_gravodrag(directory, index, outfile):
     #  Get positions of companions
     for i in range(particle_number):
         if i != prim_index:  #  Ignore Primary as already done
-            coord = [ce['particle_position_x'][i] * length_unit1,
-                           ce['particle_position_y'][i] * length_unit1,
-                           ce['particle_position_z'][i] * length_unit1]
-
+            coord = [ce['particle_position_x'][i] * lu,
+                           ce['particle_position_y'][i] * lu,
+                           ce['particle_position_z'][i] * lu]
             #  Assign values to dictionary
             comp_coords[pdex[i]] = coord
 
@@ -174,11 +173,12 @@ def ce_gravodrag(directory, index, outfile):
     accretion_radius = {}
     sound_speed_in_cell = {}
     comp_mass = {}
+    gravodrag = {}
 
     for i in range(particle_number):
         if i != prim_index:
             #  Convert to code coordinates
-            code_coords = [x / length_unit1 for x in comp_coords[pdex[i]]]
+            code_coords = [x / lu for x in comp_coords[pdex[i]]]
 
             #  PART 1: AVERAGE DENSITY
             #  Find the density at the position of the companion 
@@ -220,9 +220,17 @@ def ce_gravodrag(directory, index, outfile):
             #  Calculate the accretion radius
             accretion_radius[pdex[i]] = (2.0 * const.YG * comp_mass[pdex[i]] /
                                         (rel_vel_mag**2.0 
-                                        + sound_speed_in_cell[pdex[i]]) )
+                                        + sound_speed_in_cell[pdex[i]]))
 
-            print("Comp Velocity Mag:" , ce["ParticleVelocityMagnitude"][pdex[i]]) 
+
+            #  PART 4: XI
+
+
+            #  PART 5: GRAVODRAG
+            #  Gravodrag = xi * pi * accretion_rad**2 * density * rel_vel**3
+            gravodrag[pdex[i]] = (np.pi * accretion_radius[pdex[i]]**2.0 *
+                                  density_in_cell[pdex[i]] * 
+                                  rel_vel_mag**3.0)
 
     print("Accretion Radius (cm):", accretion_radius)
     print("Comp Mass (g)" , comp_mass)
@@ -231,9 +239,11 @@ def ce_gravodrag(directory, index, outfile):
     print("Comp Velocity (cm/s): ", comp_velocity)
     print("Relative Velocity (cm/s): ", relative_velocity)
     print("Sound Speed in Cell (cm/s): ", sound_speed_in_cell)
+    print("Gravodrag (g cm/s^2)", gravodrag)
 
-    #  PART 4: XI
-    
+
+
+
     data = str(current_time) + " " + str(current_cycle) + " "
     outfile.write(data)
     outfile.write("\n")
@@ -248,7 +258,6 @@ if __name__ == "__main__":
         (root_dir, exclude_dir, plot_dir, initial_path, 
          final_path_plus_one, particle_number, output_file_name, 
          output_file_append) = read_inlist(inlist_path)
-
     else:
         print("Inlist File Not Supplied!")
         sys.exit(0)
