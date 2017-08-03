@@ -7,7 +7,7 @@
 SCRIPT=$1
 
 # This is the inlist of parameters that will be modified by this script.
-INLIST=inlist_ce_analysis_template.ini
+INLIST=inlist_ce_analysis_multirun.ini
 
 # Range depends on number of directories in path.
 # The FINAL_PATH is equal to the total number of directories.
@@ -34,5 +34,5 @@ wait
 rm ce_analysis.*
 
 echo " "
-echo "FINISHED CE_RUN: " $SCRIPT
+echo "FINISHED CE_MULTIRUN: " $SCRIPT
 echo " "
