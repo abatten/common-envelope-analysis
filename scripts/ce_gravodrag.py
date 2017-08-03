@@ -126,7 +126,7 @@ def ce_gravodrag(directory, index, outfile):
     #  knowing their name through: ce["Dataname"]:
     ce = pf.h.all_data()
 
-    #  List of particle masses
+    #  List of unordered particle masses
     particle_masses = ce["ParticleMassMsun"]
 
     #  The core of the primary has the largest mass
@@ -144,7 +144,6 @@ def ce_gravodrag(directory, index, outfile):
     #  Get the indicies of the particles. i.e track specific particles
     pdex = ce["particle_index"]
     comp_coords = {}
-    comp_velocity = {}
     
     if len(pdex) != particle_number:
         print("ERROR")
@@ -169,6 +168,7 @@ def ce_gravodrag(directory, index, outfile):
 
     density_in_cell = {}
     velocity_in_cell = {}
+    comp_velocity = {}
     relative_velocity = {}
     accretion_radius = {}
     sound_speed_in_cell = {}
@@ -177,7 +177,7 @@ def ce_gravodrag(directory, index, outfile):
     for i in range(particle_number):
         if i != prim_index:
             #  Convert to code coordinates
-            code_coords = [x/length_unit1 for x in comp_coords[pdex[i]]]
+            code_coords = [x / length_unit1 for x in comp_coords[pdex[i]]]
 
             #  PART 1: AVERAGE DENSITY
             #  Find the density at the position of the companion 
@@ -196,19 +196,30 @@ def ce_gravodrag(directory, index, outfile):
 
             velocity_in_cell[pdex[i]] = gas_velocity
             comp_velocity[pdex[i]] = part_velocity
-            relative_velocity[pdex[i]] = [x-y for x,y in 
+            relative_velocity[pdex[i]] = [x - y for x,y in 
                                           zip(part_velocity, gas_velocity)]
-
 
             #  PART 3: ACCRETION RADIUS
             #  accretion_radius = 2 * G * Mass / rel_vel**2 + sound_speed**2
             
+            #  Find companion mass            
+            comp_mass[pdex[i]] = particle_masses[i]
+
             #  Find the sound speed in the cell
             sound_speed = pf.h.find_field_value_at_point(["SoundSpeed"], 
                                                           code_coords)
             sound_speed_in_cell[pdex[i]] = sound_speed
+
+            #  Calculate magnitude of the relative velocity
             rel_vel_mag = np.linalg.norm(relative_velocity[pdex[i]])
-            print(rel_vel_mag)            
+
+            #  Calculate the accretion radius
+            accretion_radius[pdex[i]] = (2.0 * 6.67e-8 * comp_mass[pdex[i]] /
+                                        (rel_vel_mag**2.0 
+                                        + sound_speed_in_cell[pdex[i]]) )
+            print(accretion_radius)
+
+
 
 
     print("Density In Cell: ", density_in_cell)
