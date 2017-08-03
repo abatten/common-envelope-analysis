@@ -21,22 +21,20 @@ def read_inlist(ipath):
     print("READING INLIST FILE")
     print("<-------------->")
     inlist_name = ipath.split('/')[-1]
-    config = ConfigParser.ConfigParser()
-    config.readfp(open(inlist_name, 'r'))
+    cfig = ConfigParser.ConfigParser()
+    cfig.readfp(open(inlist_name, 'r'))
    
     # Read in the config file
-    root_dir = config.get('Common Section', 'root_dir')
-    exclude_dir = config.get('Common Section', 'exclude_dir')
-    plot_dir = config.get('Common Section', 'plot_dir')
-    initial_path = config.getint('Common Section', 'initial_path')
-    final_path_plus_one = config.getint('Common Section', 'final_path_plus_one')
-    output_file_name = config.get('Angular Momentum Section', 'output_file_name')
-    output_file_append = config.getboolean('Angular Momentum Section', 'output_file_append')
-    angular_momentum_wrt_com = config.getboolean("Angular Momentum Section", "angular_momentum_wrt_com")
-    smoothing_length = config.getfloat('Common Section', 'smoothing_length')
-    particle_number = config.getint('Common Section', 'particle_number')
-
-
+    root_dir = cfig.get('Common Section', 'root_dir')
+    exclude_dir = cfig.get('Common Section', 'exclude_dir')
+    plot_dir = cfig.get('Common Section', 'plot_dir')
+    initial_path = cfig.getint('Common Section', 'initial_path')
+    final_path_plus_one = cfig.getint('Common Section', 'final_path_plus_one')
+    output_file_name = cfig.get('Angular Momentum Section', 'output_file_name')
+    output_file_append = cfig.getboolean('Angular Momentum Section', 'output_file_append')
+    angular_momentum_wrt_com = cfig.getboolean("Angular Momentum Section", "angular_momentum_wrt_com")
+    smoothing_length = cfig.getfloat('Common Section', 'smoothing_length')
+    particle_number = cfig.getint('Common Section', 'particle_number')
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
@@ -56,57 +54,63 @@ def read_inlist(ipath):
             smoothing_length, particle_number)
 
 def BoundMinDensity(field, data):
-    # Get the length, time and mass units used in the current simulation  
-    length_unit1 = data.pf.parameters["LengthUnits"]
-    time_unit1 = data.pf.parameters["TimeUnits"]
-    mass_unit1 = data.pf.parameters["MassUnits"]
+    #  Get the length, time and mass units used in the current simulation  
+    lu = data.pf.parameters["LengthUnits"]
+    tu = data.pf.parameters["TimeUnits"]
+    mu = data.pf.parameters["MassUnits"]
 
-    # Step 1: Thermal Energy of Gas
-    current_Etherm_gas = data['ThermalEnergy'] * data['CellMass']
-    # Step 2: Kinetic Energy of the Gas
-    current_Ekin_gas = data['KineticEnergy'] * data['CellVolume']
-    # Step 3: Potential Energy of the Gas
-    # The potential energy is computed only if the potential field is available
+    #  Step 1: Thermal Energy of Gas
+    Etherm_gas = data['ThermalEnergy'] * data['CellMass']
+
+    #  Step 2: Kinetic Energy of the Gas
+    Ekin_gas = data['KineticEnergy'] * data['CellVolume']
+
+    #  Step 3: Potential Energy of the Gas
+    #  Potential energy is computed only if the potential field is available
     if (data.pf.parameters['SelfGravity'] == 1):
-        current_Epot_gas = data['Grav_Potential']  * (length_unit1/time_unit1)**2.0 * data['CellMass']
+        Epot_gas = data['Grav_Potential'] * (lu / tu)**2.0 * data['CellMass']
     else:
-        current_Epot_gas = 0.0
+        Epot_gas = 0.0
 
     # Step 4: Potential Energy of the particle to the gas
     # Working only for the common envelope problem type
     if (data.pf.parameters['ProblemType']) == 41:
-        # Whole box needed to find the particles
-        box = data.pf.h.all_data()
+        # Whole ce needed to find the particles
+        ce = data.pf.h.all_data()
 
         # Determine the size of the smallest cell for the smoothing length
-        smallest_cell_length =  data.pf.h.get_smallest_dx() * length_unit1
+        smallest_cell_length =  data.pf.h.get_smallest_dx() * lu
+ 
         radius_particle = dict()
-        current_Epot_particle = dict()
+        Epot_particle = dict()
 
-        for i in range(len(box['particle_index'])):
-
+        for i in range(len(ce['particle_index'])):
             data_coords = (data['x'], data['y'], data['z'])
-            particle_coords = (box['particle_position_x'][i],
-                               box['particle_position_y'][i],
-                               box['particle_position_z'][i])
+            particle_coords = (ce['particle_position_x'][i],
+                               ce['particle_position_y'][i],
+                               ce['particle_position_z'][i])
 
-            # Calculate the distance the gas is from the particle.
-            radius_part = cef.distance(data_coords, particle_coords, length_unit1)
+            # Calculate the distance the gas is from the particle/.
+            radius_part = cef.distance(data_coords, particle_coords, lu)
 
             # Smoothed Gravitational Potential
             # See M. Ruffert 1993
-            current_Epot_particle[i] = cef.grav_pot(box['ParticleMass'][i], data['CellMass'], radius_part, False, smoothing_length, smallest_cell_length)
+            Epot_particle[i] = cef.grav_pot(ce['ParticleMass'][i], 
+                                                    data['CellMass'], 
+                                                    radius_part, False, 
+                                                    smoothing_length, 
+                                                    smallest_cell_length)
 
-        current_Epot_part_to_gas = 0
-        for i in range(len(box['particle_index'])):
-            current_Epot_part_to_gas = current_Epot_part_to_gas + current_Epot_particle[i]
+        Epot_part_to_gas = 0
+        for i in range(len(ce['particle_index']):
+            Epot_part_to_gas = Epot_part_to_gas + Epot_particle[i]
 
     else:
-        current_Epot_part_to_gas = 0.0
+        Epot_part_to_gas = 0.0
     
     # Computes the total energy of the gas in each cell
     # Step 1 + Step 2 + Step 3 + Step 4
-    Etot = current_Etherm_gas + current_Epot_gas + current_Ekin_gas + current_Epot_part_to_gas
+    Etot = Etherm_gas + Epot_gas + Ekin_gas + Epot_part_to_gas
     # Locations of bound and unbound cells
     bound = Etot < 0.0
     unbound = Etot > 0.0
@@ -123,17 +127,17 @@ def initialise_arrays():
 
     cycle = np.ndarray([0],dtype=float) #top grid cycles
 
-    Lp_x = np.ndarray([0],dtype=float) #particles x angular momentum
-    Lp_y= np.ndarray([0],dtype=float) #particles y angular momentum
-    Lp_z = np.ndarray([0],dtype=float) #particles z angular momentum
+    Lp_x = np.ndarray([0],dtype=float)  #  particles x angular momentum
+    Lp_y = np.ndarray([0],dtype=float)  #  particles y angular momentum
+    Lp_z = np.ndarray([0],dtype=float)  #  particles z angular momentum
 
-    Lg_x = np.ndarray([0],dtype=float) #gas x angular momentum
-    Lg_y = np.ndarray([0],dtype=float) #gas y angular momentum
-    Lg_z = np.ndarray([0],dtype=float) #gas z angular momentum
+    Lg_x = np.ndarray([0],dtype=float)  #  gas x angular momentum
+    Lg_y = np.ndarray([0],dtype=float)  #  gas y angular momentum
+    Lg_z = np.ndarray([0],dtype=float)  #  gas z angular momentum
 
-    Ltot_x = np.ndarray([0],dtype=float) #tot x angular momentum
-    Ltot_y = np.ndarray([0],dtype=float) #tot y angular momentum
-    Ltot_z = np.ndarray([0],dtype=float) #tot z angular momentum
+    Ltot_x = np.ndarray([0],dtype=float)  # tot x angular momentum
+    Ltot_y = np.ndarray([0],dtype=float)  # tot y angular momentum
+    Ltot_z = np.ndarray([0],dtype=float)  # tot z angular momentum
 
     return current_time, cycle, Lp_x, Lp_y, Lp_z, Lg_x, Lg_y, Lg_z, Ltot_x, Ltot_y, Ltot_z 
 
@@ -177,10 +181,11 @@ def ce_angular_momentum(directory, index, output_file):
     pf = load(directory)
 
     # Get length, time and mass units used in the simulation
-    length_unit1 = pf.parameters['LengthUnits']
-    time_unit1 = pf.parameters['TimeUnits']
-    mass_unit1 = pf.parameters['MassUnits']
+    lu = pf.parameters['LengthUnits']
+    tu = pf.parameters['TimeUnits']
+    mu = pf.parameters['MassUnits']
 
+    #  Import all of the data
     ce = pf.h.all_data()
 
     if (index == initial_path):
@@ -205,18 +210,16 @@ def ce_angular_momentum(directory, index, output_file):
         # Create aray to store particle mass
         pm = []
 
-
-
-        particles_indicies = ce['particle_index']
+        pdex = ce['particle_index']
         print(ce["particle_position_x"], ce["particle_position_y"], ce["particle_position_z"])        
 
 
         # Particles
         for i in range(particle_number):
             # Particle Position (x,y,z)
-            ppx.append(ce["particle_position_x"][i] * length_unit1)
-            ppy.append(ce["particle_position_y"][i] * length_unit1)
-            ppz.append(ce["particle_position_z"][i] * length_unit1)
+            ppx.append(ce["particle_position_x"][i] * lu)
+            ppy.append(ce["particle_position_y"][i] * lu)
+            ppz.append(ce["particle_position_z"][i] * lu)
             # Particle Velocity (x,y,z)
             pvx.append(ce["particle_velocity_x"])
             pvy.append(ce["particle_velocity_y"])
@@ -236,9 +239,9 @@ def ce_angular_momentum(directory, index, output_file):
                 pass
         
         # Primary Envelope
-        gx = primary["x"] * length_unit1
-        gy = primary["y"] * length_unit1
-        gz = primary["z"] * length_unit1
+        gx = primary["x"] * lu
+        gy = primary["y"] * lu
+        gz = primary["z"] * lu
 
         gvx = primary["x-velocity"]
         gvy = primary["y-velocity"]
@@ -247,8 +250,7 @@ def ce_angular_momentum(directory, index, output_file):
         mass = primary["CellMass"]
            
         # Get the COM coords
-        com_coords = ce.quantities["CenterOfMass"](use_particles=True) * length_unit1
-
+        com_coords = ce.quantities["CenterOfMass"](use_particles=True) * lu
         # Move to the COM of the system (COM has 0 velocity).
         ppx_com = [x - com_coords[0] for x in ppx]
         ppy_com = [y - com_coords[0] for y in ppy]
@@ -319,11 +321,9 @@ def ce_angular_momentum(directory, index, output_file):
 
     for i in range(particle_number):
         if i != primary_index:
-            data += str(pL[particles_indicies[i]])[1:-1] + " "
-
+            data += str(pL[pdex[i]])[1:-1] + " "
 
     data +="\n"
-
 
     output_file.write(data)
 
@@ -361,12 +361,9 @@ if __name__ == "__main__":
     # Set output file name and open it to write
     output_file_name = plot_dir + output_file_name
     output_file = open_file(output_file_name, output_file_append, particle_number)
-
-
     
     for index in range(initial_path, final_path_plus_one):
         ce_angular_momentum(root_dir_list[index],  index, output_file)
-
 
     #close the written file
     output_file.close()
