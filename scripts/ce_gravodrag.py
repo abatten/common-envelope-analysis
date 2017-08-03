@@ -81,7 +81,7 @@ def open_file(file_name, append, particle_number):
         gravodrag_dict = {}
         
         #  Adjust the number of columns for number of particles
-        for i in range(particle_number - 1):  # 1 less as we don't want the core
+        for i in range(particle_number - 1):  # One less! Don't want the core
             density_dict[str(i+1)] = ("%s_%s_%s" % 
                                      ("Particle", str(i+1),"Density"))
             rel_vel_dict[str(i+1)] = ("%s_%s_%s" %
@@ -141,19 +141,10 @@ def ce_gravodrag(directory, index, outfile):
             pass
     print("Primary Index: ", prim_index)
 
-    #  Get the position and velocitiy of the primary core
-#    prim_coord = [ce["particle_position_x"][prim_index] * length_unit1,
-#                   ce["particle_position_y"][prim_index] * length_unit1,
-#                   ce["particle_position_z"][prim_index] * length_unit1] 
-
-#    prim_vel = [ce["particle_position_x"][prim_index] * length_unit1,
-#                ce["particle_position_y"][prim_index] * length_unit1,
-#                ce["particle_position_z"][prim_index] * length_unit1]
-
     #  Get the indicies of the particles. i.e track specific particles
     pdex = ce["particle_index"]
-    coords = {}
-    vels = {}
+    comp_coords = {}
+    comp_velocity = {}
     
     if len(pdex) != particle_number:
         print("ERROR")
@@ -167,41 +158,37 @@ def ce_gravodrag(directory, index, outfile):
     #  Get positions and velocities of companions
     for i in range(particle_number):
         if i != prim_index:  #  Ignore Primary as already done
-            comp_coord = [ce['particle_position_x'][i] * length_unit1,
+            coord = [ce['particle_position_x'][i] * length_unit1,
                            ce['particle_position_y'][i] * length_unit1,
                            ce['particle_position_z'][i] * length_unit1]
-            comp_vel = [ce['particle_velocity_x'][i] * length_unit1,
-                        ce['particle_velocity_x'][i] * length_unit1,
-                        ce['particle_velocity_x'][i] * length_unit1] 
+            vel = [ce['particle_velocity_x'][i] ,
+                        ce['particle_velocity_x'][i],
+                        ce['particle_velocity_x'][i]] 
 
             #  Assign values to dictionary
-            coords[pdex[i]] = comp_coord
-            vels[pdex[i]] = comp_vel
+            comp_coords[pdex[i]] = coord
+            comp_velocity[pdex[i]] = vel
 
     # Gravodrag = xi * pi * accretion_rad**2 * density * relative_vel**3
-    
-    #  PART 1: AVERAGE DENSITY
-    #  Find density of cell at particle position
+
     density_in_cell = {}
+    velocity_in_cell = {}
+    relative_velocity = {}
+    accretion_radius = {}
+    sound_speed = {}
+    comp_mass = {}
+
     for i in range(particle_number):
         if i != prim_index:
             #  Convert to code coordinates
-            code_coords = [x/length_unit1 for x in coords[pdex[i]]]
+            code_coords = [x/length_unit1 for x in comp_coords[pdex[i]]]
+
+            #  PART 1: AVERAGE DENSITY
             #  Find the density at the position of the companion 
             density = pf.h.find_field_value_at_point(['Density'], code_coords)
-
             density_in_cell[pdex[i]] = density
-    print("Density In Cell: ", density_in_cell)
 
-
-    #  PART 2: AVERAGE RELATIVE VELOCITY
-    velocity_in_cell = {}
-    comp_velocity = {}
-    relative_velocity = {}
-    for i in range(particle_number):
-        if i != prim_index:
-            #  Convert to code coordinates
-            code_coords = [x/length_unit1 for x in coords[pdex[i]]]
+            #  PART 2: AVERAGE RELATIVE VELOCITY
             #  Find the velocity of the gas in the companion cell
             gas_velocity = pf.h.find_field_value_at_point(["x-velocity",
                                                            "y-velocity",
@@ -213,20 +200,21 @@ def ce_gravodrag(directory, index, outfile):
 
             velocity_in_cell[pdex[i]] = gas_velocity
             comp_velocity[pdex[i]] = velocity
-            relative_velocity[pdex[i]] = [x+y for x,y in 
+            relative_velocity[pdex[i]] = [x-y for x,y in 
                                           zip(velocity, gas_velocity)]
 
+
+
+    print("Density In Cell: ", density_in_cell)
     print("Gas Velocity: ", velocity_in_cell) 
     print("Comp Velocity: ", comp_velocity)
     print("Relative Velocity: ", relative_velocity)
-
-
-    #  PART 3: ACCRETION RADIUS
     #  accretion_radius = 2 * G * Mass / relative_velocity**2 + sound_speed**2
-    accretion_radius = {}
-    sound_speed = {}
-    comp_mass = {}
-    
+    for i in range(particle_number):
+        if i != prim_index:
+            # Convert to code coordinates
+            code_coords = [x/length_unit1 for x in comp_coords[pdex[i]]]
+            # FInd the sound spee
 
 
 
