@@ -63,7 +63,6 @@ def open_file(file_name, num_particles):
 
 
 def seperations(directory, index, output_file, particle_number):
-
     str_index = cef.index2str(index)       
 
     print(" ")
@@ -72,16 +71,18 @@ def seperations(directory, index, output_file, particle_number):
     print("<-------------->")
     pf = load(directory)
       
-    #gets the length, time and mass units used in the current simulation    
-    length_unit1 = pf.parameters['LengthUnits']
-    time_unit1 = pf.parameters['TimeUnits']
-    mass_unit1 = pf.parameters['MassUnits']
+    #  Gets the length, time and mass units used in the current simulation    
+    lu = pf.parameters['LengthUnits']
+    tu = pf.parameters['TimeUnits']
+    mu = pf.parameters['MassUnits']
 
     current_cycle = pf.parameters['InitialCycleNumber']
     current_time = pf.current_time
 
-    #adds the whole data as an object called common_envelope. It is an array and you can acces the data by knowing their name through: common_envelope["Dataname"]:
-    common_envelope = pf.h.all_data()
+    #  Adds the whole data as an object called ce. 
+    #  It is an array and you can acces the data by knowing their 
+    #  name through: ce["Dataname"]:
+    ce = pf.h.all_data()
 
     if (index == initial_path):
         current_cycle = 0
@@ -93,41 +94,39 @@ def seperations(directory, index, output_file, particle_number):
 
 
     # Find which index corresponds to the primary star (the largest mass).
-    particle_masses = common_envelope["ParticleMassMsun"]
-    primary_mass = np.max(particle_masses)
+    particle_masses = ce["ParticleMassMsun"]
+    prim_mass = np.max(particle_masses)
     for i in range(len(particle_masses)):
-        if particle_masses[i] == primary_mass:
-            primary_index = i
+        if particle_masses[i] == prim_mass:
+            prim_index = i
             break
         else:
             pass    
 
-    print("Primary Index: ", primary_index)
+    print("Primary Index: ", prim_index)
 
     # Coordinates of the Primary Star
-    primary_coords = [common_envelope['particle_position_x'][primary_index] * length_unit1,
-                      common_envelope['particle_position_y'][primary_index] * length_unit1,
-                      common_envelope['particle_position_z'][primary_index] * length_unit1]
+    primary_coords = [ce['particle_position_x'][prim_index] * lu,
+                      ce['particle_position_y'][prim_index] * lu,
+                      ce['particle_position_z'][prim_index] * lu]
 
     sep = {}
-
     for i in range(particle_number):
-        particle_indicies = common_envelope['particle_index']
+        #  Get list of particle indicies to track individual particles
+        pdex = ce['particle_index']
 
-        if i != primary_index:
-
-            companion_coords = [common_envelope['particle_position_x'][i] * length_unit1,
-                                common_envelope['particle_position_y'][i] * length_unit1,
-                                common_envelope['particle_position_z'][i] * length_unit1]
+        if i != prim_index:
+            companion_coords = [ce['particle_position_x'][i] * lu,
+                                ce['particle_position_y'][i] * lu,
+                                ce['particle_position_z'][i] * lu]
 
             seperation = cef.distance(primary_coords, companion_coords)
-            sep[particle_indicies[i]] = seperation
-            print("Companion " + str(particle_indicies[i]), seperation)
+            sep[pdex[i]] = seperation
+            print("Companion " + str(pdex[i]), seperation)
 
-    row = str(current_time * time_unit1) + " " +str (current_cycle)
+    row = str(current_time * tu) + " " +str (current_cycle)
     for i in range(len(sep.items())):
         row = " ".join([row, str(sep.items()[i][1])])
-
 
     output_file.write(row + "\n")
 
@@ -137,7 +136,6 @@ if __name__ == "__main__":
     (root_dir, exclude_dir, plot_dir, initial_path,
      final_path_plus_one, output_file_name, particle_number) = read_inlist(sys.argv[1])
 
-
     # Sort the root directory
     root_dir_list = cef.root_sort(root_dir, exclude=exclude_dir)
 
@@ -145,7 +143,5 @@ if __name__ == "__main__":
     output_file_name = plot_dir + output_file_name
     output_file = open_file(output_file_name, particle_number)
 
-
     for index in range(initial_path, final_path_plus_one):
         seperations(root_dir_list[index], index, output_file, particle_number)
-
