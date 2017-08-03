@@ -11,7 +11,7 @@ INLIST=inlist_ce_analysis_template.ini
 
 # Range depends on number of directories in path.
 # The FINAL_PATH is equal to the total number of directories.
-FINAL_PATH=176
+FINAL_PATH=36
 
 for i in $(seq 0 ${FINAL_PATH})
 do

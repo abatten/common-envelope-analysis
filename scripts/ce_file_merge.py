@@ -5,14 +5,15 @@ import os
 import sys
 import ConfigParser
 import glob
+import shutil
 
 #directory = str(sys.argv[1])
 #file_name = str(sys.argv[2])
 
-directory = '/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2/plots/'
-#directory = "/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2_mass_added/"
-file_name = 'energy_components_fixed'
-#file_name = "ce_mass_loss_three"
+#directory = '/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim1/plots/'
+directory = "/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2_mass_added/"
+#file_name = 'energy_components_fixed'
+file_name = "ce_mass_loss_three"
 output_file_name = 'combined_' + file_name + '_file.txt'
 
 print(" ")
@@ -27,12 +28,14 @@ file_numbers = []
 
 # Find the suffix number for each file
 for i in range(len(file_list)):
-    file_numbers.append(file_list[i].split('_'))  #
+    file_numbers.append(file_list[i].split('_')) 
+    print(file_numbers[i][-1], file_list[i]) 
     file_numbers[i][-1] = file_numbers[i][-1][:-4]  # Remove .txt from the files
 
 # Sort the files into the correct order
 dict = {}
 for i in range(len(file_list)):
+    print(file_numbers[i][-1])
     dict[int(file_numbers[i][-1])] = file_list[i]  # Associate the suffix number with the file
 
 # Write the combined output file
@@ -45,7 +48,6 @@ for i in range(len(file_list)):
         out_file.write(lines[0])
     out_file.write(lines[1])
     
-
 print(" ")
 print("<---------->")
 print("COMBINE COMPLETE")
