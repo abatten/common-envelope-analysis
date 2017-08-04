@@ -224,11 +224,12 @@ def ce_gravodrag(directory, index, outfile):
 
 
             #  PART 4: XI
-
+            #  Assume that xi = 1
+            xi = 1
 
             #  PART 5: GRAVODRAG
             #  Gravodrag = xi * pi * accretion_rad**2 * density * rel_vel**3
-            gravodrag[pdex[i]] = (np.pi * accretion_radius[pdex[i]]**2.0 *
+            gravodrag[pdex[i]] = (xi * np.pi * accretion_radius[pdex[i]]**2.0 *
                                   density_in_cell[pdex[i]] * 
                                   rel_vel_mag**3.0)
 
@@ -241,10 +242,14 @@ def ce_gravodrag(directory, index, outfile):
     print("Sound Speed in Cell (cm/s): ", sound_speed_in_cell)
     print("Gravodrag (g cm/s^2)", gravodrag)
 
-
-
-
     data = str(current_time) + " " + str(current_cycle) + " "
+    for i range(particle_number):
+        if i != prim_index:
+            data += (str(gravodrag[pdex[i]]) + " " 
+                    + str(density_in_cell[pdex[i]]) + " "
+                    + str(relative_velocity[pdex[i]] + " "
+                    + str(accretion_radius[pdex[i]]) + " "
+                    + str(sound_speed_in_cell[pdex[i]]) + " ")
     outfile.write(data)
     outfile.write("\n")
 
