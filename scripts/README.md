@@ -9,6 +9,15 @@ The inlist is broken up into sections. The first section is a
 'plot_dir' which is are variables for where the data is stored and where 
 to write output files respectfully.
 
+### Multirun
+Due to large number of numerical calculations some of these scripts perform 
+(in particular `ce_energy_smoothed_potential` and `ce_mass_loss`) they can take
+a long time to run in sequence.
+
+This is a script I use to cheat in parallelising my code. At the moment it only works
+for  It launches multiple instances of the python script
+on different sets of data simulataneiously.
+
 `inlist_ce_analysis_multirun.ini`
 
 
