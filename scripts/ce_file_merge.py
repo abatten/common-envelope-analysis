@@ -1,11 +1,6 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, print_function
 
-import numpy as np
-import os
-import sys
-import ConfigParser
 import glob
-import shutil
 
 #directory = str(sys.argv[1])
 #file_name = str(sys.argv[2])
@@ -24,8 +19,8 @@ print(" ")
 
 # List all files in the directory with the given name
 file_list = glob.glob(directory + "/" + file_name + "*")
-file_numbers = []
 
+file_numbers = []
 # Find the suffix number for each file
 for i in range(len(file_list)):
     file_numbers.append(file_list[i].split('_')) 
@@ -36,10 +31,12 @@ for i in range(len(file_list)):
 dict = {}
 for i in range(len(file_list)):
     print(file_numbers[i][-1])
-    dict[int(file_numbers[i][-1])] = file_list[i]  # Associate the suffix number with the file
+    #  Associate the suffix number with the file
+    dict[int(file_numbers[i][-1])] = file_list[i]
 
-# Write the combined output file
+# Create output file
 out_file = open(directory + output_file_name, 'w')
+# Write the combined output file
 for i in range(len(file_list)):
     print(dict[i])
     f = open(dict[i], 'r')
@@ -51,6 +48,7 @@ for i in range(len(file_list)):
 print(" ")
 print("<---------->")
 print("COMBINE COMPLETE")
+print("CREATED: " + directory + output_file_name)
 print("<---------->")
 print(" ")
 
