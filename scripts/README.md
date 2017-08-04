@@ -11,13 +11,13 @@ to write output files respectfully.
 
 ## Multirun
 Due to large number of numerical calculations some of these scripts
-perform (in particular `ce_energy_smoothed_potential` and 
-`ce_mass_loss`) they can take a long time to run in sequence. The 
+perform (in particular `ce_energy_smoothed_potential.py` and 
+`ce_mass_loss.py`) they can take a long time to run in sequence. The 
 shell script `ce_multirun.sh` is basically an easy parallelisation 
 of my code. It works by launching multiple instances of the python script
 on different sets of data simulataneiously. 
 
-To launch a script using multirun first modify the multirun inlist
+To launch a script using multirun first modify the multirun inlist:
 
 `inlist_ce_analysis_multirun.ini`
 
@@ -29,11 +29,19 @@ This will create an output file for every data dump. To merge the outputs
 into a single file use `ce_file_merge.py`
 
 
-
-
-
-
 ## Analysis Scripts:
+|Script Name                    |Purpose                                            |
+|---                            |---                                                |
+|`ce_angular_momentum`          |Compute angular momentum components                |
+|`ce_core_seperations`          |Compute the seperation between particles           |
+|`ce_damping_analysis`          |Produce various radial/slice plots from a dump     |
+|`ce_energy_smoothed_potential` |Compute the energy components                      |
+|`ce_file_merge`                |Merge files together after `ce_multirun`           |
+|`ce_gravodrag`                 |Compute teh gravodrag on the companions            |
+|`ce_mass_loss`                 |Compute bound/unbound mass of the envelope         |
+|`ce_particle_pos_and_vel`      |Find the positions and velocities of the particles |
+|`ce_plot_from_file`            |Read a text file of data and produce various plots |
+
 ### ce_damping_analysis.py
 This script is designed to analyse the data of a pre-common
 envelope damping simulation. With a single star that is inserted 
@@ -102,8 +110,3 @@ An example of this script being used to create a smooth, marked energy plot.
 ```
     python ce_plot_from_file.py /path/to/file/ --energy --smoothed --marked 1 2 3
 ```
-
-### run.sh
-This is a script I use to cheat in parallelising my code. At the moment it only works
-for 'ce_energy_smoothed_potential.py'. It launches multiple instances of the python script
-on different sets of data simulataneiously.
