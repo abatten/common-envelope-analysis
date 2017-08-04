@@ -1,3 +1,11 @@
+# Common Envelope Analysis
+These scripts are designed to analyse the data of a common
+envelope simulation. With a single star that is inserted 
+in ENZO from a 1D stellar evolution code output, via the YT package.
+
+The simulations could have one or more companion particles and these
+scripts account for the number of particles.
+
 ## Inlists:
 These common envelope analysis scripts have been writen to require an
 'inlist' to specify the individual parameters of the scripts.
@@ -37,20 +45,28 @@ into a single file use `ce_file_merge.py`
 |`ce_damping_analysis`          |Produce various radial/slice plots from a dump     |
 |`ce_energy_smoothed_potential` |Compute the energy components                      |
 |`ce_file_merge`                |Merge files together after `multirun`              |
-|`ce_gravodrag`                 |Compute teh gravodrag on the companions            |
+|`ce_gravodrag`                 |Compute the gravodrag on the companions            |
 |`ce_mass_loss`                 |Compute bound/unbound mass of the envelope         |
 |`ce_particle_pos_and_vel`      |Find the positions and velocities of the particles |
 |`ce_plot_from_file`            |Read a text file of data and produce various plots |
 
-### ce_damping_analysis.py
-This script is designed to analyse the data of a pre-common
-envelope damping simulation. With a single star that is inserted 
-in enzo from a 1D stellar evolution code output, via the YT package.
+### ce_angular_momentum.py
+Calculates the angular momentum components of the companions.
 
-The script can generate a number of plots as listed below. 
-To run this script you need to specify an inlist file with all the 
-required parameters and specify the plots by adding them as 
-arguments when calling the python script. 
+Note: Still under work
+```
+    python ce_angular_momentum.py inlist_ce_analysis.ini
+```
+
+### ce_core_seperations.py
+Calculates the seperation(s) between the primary and the companion(s).
+
+```
+    python ce_seperations.py inlist_ce_analysis.ini
+```
+
+### ce_damping_analysis.py
+Can generate a number of plots as listed below. 
 
 |Radial Plots                   |Axial Plots                               |
 |---                            |---                                       |
@@ -65,6 +81,9 @@ arguments when calling the python script.
 |8: Z-Velocity vs Radius        |17: Entropy Slice Z-Axis                  |
 |                               |18: Gravitational Potential Slice Z-Axis  |
 
+To run this script you need to specify the plots by adding them as 
+arguments when calling the python script. 
+
 An example of running this script to create density and gravitational potential
 slice plots.
 ```
@@ -73,20 +92,9 @@ slice plots.
 
 ### ce_energy_smoothed_potential.py
 This script calculats all of the energy components of the common envelope
+
 ```
     python ce_energy_smoothed_potential.py inlist_ce_analysis.ini
-```
-
-### ce_angular_momentum.py
-```
-    python ce_angular_momentum.py inlist_ce_analysis.ini
-```
-### ce_seperations.py
-This script calculates the seperation(s) between the primary and the companion(s).
-
-To run this script:
-```
-    python ce_seperations.py inlist_ce_analysis.ini
 ```
 
 ### ce_plot_from_file.py
