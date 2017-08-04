@@ -5,22 +5,28 @@ These common envelope analysis scripts have been writen to require an
 `inlist_ce_analysis.ini`
 
 The inlist is broken up into sections. The first section is a 
-'Common Section' which every script will read such as the 'root_dir' or
-'plot_dir' which is are variables for where the data is stored and where 
+'Common Section' which every script will read such as the `root_dir` or
+`plot_dir` which is are variables for where the data is stored and where 
 to write output files respectfully.
 
-### Multirun
-Due to large number of numerical calculations some of these scripts perform 
-(in particular `ce_energy_smoothed_potential` and `ce_mass_loss`) they can take
-a long time to run in sequence.
+## Multirun
+Due to large number of numerical calculations some of these scripts
+perform (in particular `ce_energy_smoothed_potential` and 
+`ce_mass_loss`) they can take a long time to run in sequence. The 
+shell script `ce_multirun.sh` is basically an easy parallelisation 
+of my code. It works by launching multiple instances of the python script
+on different sets of data simulataneiously. 
 
-This is a script I use to cheat in parallelising my code. At the moment it only works
-for  It launches multiple instances of the python script
-on different sets of data simulataneiously.
+To launch a script using multirun first modify the multirun inlist
 
 `inlist_ce_analysis_multirun.ini`
 
+Then launch ce_multirun parsing the python script as the first argument
 
+`./ce_multirun.sh ce_energy_damping_analysis.py`
+
+This will create an output file for every data dump. To merge the outputs
+into a single file use `ce_file_merge.py`
 
 
 
