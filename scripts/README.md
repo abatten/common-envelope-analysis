@@ -13,7 +13,7 @@ to write output files respectfully.
 Due to large number of numerical calculations some of these scripts
 perform (in particular `ce_energy_smoothed_potential.py` and 
 `ce_mass_loss.py`) they can take a long time to run in sequence. The 
-shell script `ce_multirun.sh` is basically an easy parallelisation 
+shell script `multirun.sh` is basically an easy parallelisation 
 of my code. It works by launching multiple instances of the python script
 on different sets of data simulataneiously. 
 
@@ -21,9 +21,9 @@ To launch a script using multirun first modify the multirun inlist:
 
 `inlist_ce_analysis_multirun.ini`
 
-Then launch ce_multirun parsing the python script as the first argument
+Then launch `multirun` parsing the python script as the first argument
 
-`./ce_multirun.sh ce_energy_damping_analysis.py`
+`./multirun.sh ce_energy_damping_analysis.py`
 
 This will create an output file for every data dump. To merge the outputs
 into a single file use `ce_file_merge.py`
@@ -36,7 +36,7 @@ into a single file use `ce_file_merge.py`
 |`ce_core_seperations`          |Compute the seperation between particles           |
 |`ce_damping_analysis`          |Produce various radial/slice plots from a dump     |
 |`ce_energy_smoothed_potential` |Compute the energy components                      |
-|`ce_file_merge`                |Merge files together after `ce_multirun`           |
+|`ce_file_merge`                |Merge files together after `multirun`              |
 |`ce_gravodrag`                 |Compute teh gravodrag on the companions            |
 |`ce_mass_loss`                 |Compute bound/unbound mass of the envelope         |
 |`ce_particle_pos_and_vel`      |Find the positions and velocities of the particles |
