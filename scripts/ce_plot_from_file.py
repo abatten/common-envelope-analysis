@@ -64,7 +64,7 @@ def energy_plot(txt_file, smoothed, marked):
              label = r"$\phi_{\mathrm{PG}}$")
 
     plt.ylim(-5,1.5)  # Change to make look good
-    plt.xlim(0,14.5)  # Time axis
+    plt.xlim(5.5,23)  # Time axis
     plt.xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
     plt.ylabel(r"$\mathrm{Energy}\ (10^{46}\ \mathrm{ergs})$", fontsize=20)
 
@@ -75,8 +75,8 @@ def energy_plot(txt_file, smoothed, marked):
         outfilename = outfilename + "_marked"
     plt.tight_layout()
     plt.legend(ncol=3, loc='lower left', frameon=False)
-    plt.savefig(plot_loc + outfilename + ".png")
-    plt.savefig(plot_loc + outfilename + ".svg") 
+    plt.savefig(plot_loc + outfilename + "_short.png")
+    plt.savefig(plot_loc + outfilename + "_short.svg") 
     plt.show()
 
 def seperation_plot(txt_file, marked):
@@ -158,7 +158,7 @@ def mass_loss_plot(txt_file, marked):
              label = r"$\mathrm{\dot{M}_{env}}$");
 
 #    plt.ylim(-2e46,1.5e46)
-    plt.xlim(0,14.5)
+#    plt.xlim(0,14.5)
     ax1.set_xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
     ax1.set_ylabel(r"$\mathrm{Mass}\ (\mathrm{M}_\odot)$", fontsize=20)
     ax2.set_ylabel(r"$\mathrm{Mass\ loss\ rate}\ (\mathrm{M}_\odot/\mathrm{yr})$", fontsize=20)
@@ -199,10 +199,14 @@ def angular_momentum_plot(txt_file):
     plt.ylabel("$L\ (g\ cm\ s^{-1})$", fontsize=16)
 #    plt.legend(loc='best', frameon=False); 
     plt.savefig(plot_loc + outfilename + ".png")
-    plt.show();
+    plt.show()
 
 def position_and_velocities_plot(txt_file):
     mat0 = genfromtxt(txt_file, skip_header=1)
+
+    plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
+    outfilename = "positions_and_velocities"
+
     AU = 1.496e13 #cm
     km = 10000 #cm
     # Each particle has 6 components x,y,z & vx,vy,vz
@@ -234,9 +238,25 @@ def position_and_velocities_plot(txt_file):
         irow+=1
 
     fig.subplots_adjust(left=0.1, right=0.98, wspace=0, hspace=0)
-    plt.savefig("testing2.png")
-    plt.show();
+    plt.savefig(plot_dir + outfilename + ".png")
+    plt.show()
 
+
+def gravodrag_plot(txt_file):
+    mat0 = genfromtxt(txt_file, skip_header=1)
+    plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
+    outfilename = "gravodrag_plot"
+
+    plt.plot(mat0[:,0], mat0[:,3],'k', linewidth=1, label = "Gravodrag")
+    #plt.plot(mat0[:,0], mat0[:,15],'k', linewidth=1, label = "Gravodrag")
+
+
+    #plt.ylim(-0.3e47,1e47)
+    plt.xlabel('$\mathrm{Time (yr)}$', fontsize=16)
+    plt.ylabel("Gravodrag", fontsize=16)
+#    plt.legend(loc='best', frameon=False); 
+    plt.savefig(plot_loc + outfilename + ".png")
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -268,6 +288,8 @@ if __name__ == "__main__":
     parser.add_argument("--posvel", 
                         help="Create plots of the positions and velocities \
                         of all the particles", action="store_true")
+    parser.add_argument("--gravodrag",
+                        help="Create plot of gravitational drag", action="store_true")
     parser.add_argument("txts", help="The text files to read.")
 
 
@@ -287,8 +309,10 @@ if __name__ == "__main__":
         mass_loss_plot(args.txts, args.marked)
 
     if args.angularmomentum:
-         angular_momentum_plot(args.txts)
+        angular_momentum_plot(args.txts)
 
     if args.posvel:
-         position_and_velocities_plot(args.txts)
+        position_and_velocities_plot(args.txts)
 
+    if args.gravodrag:
+        gravodrag_plot(args.txts)
