@@ -75,24 +75,40 @@ def open_file(file_name, append, particle_number):
     if (append == False):  #  Overwrite
         output_file = open(file_name, "w")
         #  Create first part of header
-        header = "Time (yr), Cycle(#)"
+        header = "Time (yr) Cycle(#)"
 
         density_dict = {}
         rel_vel_dict = {}
         gravodrag_dict = {}
-        
+        accr_rad_dict = {}
+        sound_speed_dict = {}
+        velocity_dict = {}
+        comp_vel_dict = {}
+
         #  Adjust the number of columns for number of particles
         for i in range(particle_number - 1):  # One less! Don't want the core
             density_dict[str(i+1)] = ("%s_%s_%s" % 
-                                     ("Particle", str(i+1),"Density"))
+                                     ("Particle", str(i+1),"Density (g/cm^3)"))
             rel_vel_dict[str(i+1)] = ("%s_%s_%s" %
-                                     ("Particle", str(i+1),"Rel_Vel"))
+                                     ("Particle", str(i+1),"Rel_Vel (cm/s)"))
             gravodrag_dict[str(i+1)] = ("%s_%s_%s" %
                                        ("Particle", str(i+1),"Gravodrag"))
+            accr_rad_dict[str(i+1)] = ("%s_%s_%s" %
+                                      ("Particle", str(i+1),"Accretion_Rad (cm)"))
+            sound_speed_dict[str(i+1)] = ("%s_%s_%s" %
+                                         ("Particle", str(i+1),"Sound Speed (cm/s)"))
+            velocity_dict[str(i+1)] = ("%s_%s_%s" %
+                                      ("Particle", str(i+1),"Gas Velocity (cm/s)"))
+            comp_vel_dict[str(i+1)] = ("%s_%s_%s" %
+                                      ("Particle", str(i+1),"Velocity (cm/s)"))
 
-            header = ", ".join([header, density_dict[str(i+1)], 
-                                rel_vel_dict[str(i+1)], 
-                                gravodrag_dict[str(i+1)]])
+            header = " ".join([header, gravodrag_dict[str(i+1)], 
+                                density_dict[str(i+1)], 
+                                accr_rad_dict[str(i+1)],
+                                sound_speed_dict[str(i+1)],
+                                rel_vel_dict[str(i+1)],
+                                velocity_dict[str(i+1)],
+                                comp_vel_dict[str(i+1)]])
 
         #  Write the header line of the file
         output_file.write(header + "\n")
@@ -222,7 +238,6 @@ def ce_gravodrag(directory, index, outfile):
                                         (rel_vel_mag**2.0 
                                         + sound_speed_in_cell[pdex[i]]))
 
-
             #  PART 4: XI
             #  Assume that xi = 1
             xi = 1
@@ -243,13 +258,17 @@ def ce_gravodrag(directory, index, outfile):
     print("Gravodrag (g cm/s^2)", gravodrag)
 
     data = str(current_time) + " " + str(current_cycle) + " "
-    for i range(particle_number):
+    
+    for i in range(particle_number):
         if i != prim_index:
             data += (str(gravodrag[pdex[i]]) + " " 
                     + str(density_in_cell[pdex[i]]) + " "
-                    + str(relative_velocity[pdex[i]] + " "
                     + str(accretion_radius[pdex[i]]) + " "
-                    + str(sound_speed_in_cell[pdex[i]]) + " ")
+                    + str(sound_speed_in_cell[pdex[i]]) + " "
+                    + str(relative_velocity[pdex[i]]) + " "
+                    + str(velocity_in_cell[pdex[i]]) + " "
+                    + str(comp_velocity[pdex[i]]) + " ")         
+
     outfile.write(data)
     outfile.write("\n")
 
