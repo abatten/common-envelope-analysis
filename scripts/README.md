@@ -17,6 +17,11 @@ The inlist is broken up into sections. The first section is a
 `plot_dir` which is are variables for where the data is stored and where 
 to write output files respectfully.
 
+After the common section are the remaining sections that are specific
+to each script. For example; `ce_energy_smoothed_potential` will only read
+the common section and the energy section. These parameters can be changed
+as needed.
+
 ## Multirun
 Due to large number of numerical calculations some of these scripts
 perform (in particular `ce_energy_smoothed_potential.py` and 
@@ -27,14 +32,17 @@ on different sets of data simulataneiously.
 
 To launch a script using multirun first modify the multirun inlist:
 
-`inlist_ce_analysis_multirun.ini`
+```
+inlist_ce_analysis_multirun.ini
+```
 
 Then launch `multirun` parsing the python script as the first argument
 
-`./multirun.sh ce_energy_damping_analysis.py`
-
+```
+    ./multirun.sh ce_energy_damping_analysis.py
+```
 This will create an output file for every data dump. To merge the outputs
-into a single file use `ce_file_merge.py`
+into a single file use `ce_file_merge.py`.
 
 
 ## Analysis Scripts:
@@ -91,7 +99,9 @@ slice plots.
 ```
 
 ### ce_energy_smoothed_potential.py
-This script calculats all of the energy components of the common envelope
+Calculates all of the energy components of the common envelope. 
+It accounds for ENZO using a smoothed potential at small seperations. It
+also automatically excludeds cells with potential energy spikes due to AMR.
 
 ```
     python ce_energy_smoothed_potential.py inlist_ce_analysis.ini
@@ -111,7 +121,7 @@ an argument.
 --massloss: Create a mass loss and mass loss rate plot  
 
 #### Optionals
---smoothed: Find NaN's in energy file and replace them  
+--smoothed: Find NaN's in energy file and replace them.  
 --marked: Add vertical black lines to the plot. List numbers after --marked   
 
 An example of this script being used to create a smooth, marked energy plot.
