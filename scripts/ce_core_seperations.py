@@ -1,19 +1,14 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function
 
-from yt.mods import *
+import yt.mods as yt
 
-import matplotlib.pyplot as plt
 import numpy as np
-import math
-import os
 import sys
 import ConfigParser
 
 import cemodules.cefunctions as cef
 
-mylog.disabled = True
 
-#################################################################################
 def read_inlist(ipath):
     print(" ")
     print("<-------------->")
@@ -46,16 +41,16 @@ def read_inlist(ipath):
 
 
 def open_file(file_name, num_particles):
-    output_file = open(file_name, 'w' )
+    output_file = open(file_name, 'w')
 
     header = "Time (yr), Cycle(#)"
 
     # Create header based on the number of particles
     dict = {}
     for i in range(num_particles-1):
-       dict[str(i+1)] = "Seperation_%s_%s" % ("Companion", i+1) + " (cm)"
-       header = ", ".join([header, dict[str(i+1)]])
-    
+        dict[str(i+1)] = "Seperation_%s_%s" % ("Companion", i+1) + " (cm)"
+        header = ", ".join([header, dict[str(i+1)]])
+
     # Write the first line of information in the file
     output_file.write(header + "\n")
 
@@ -63,24 +58,23 @@ def open_file(file_name, num_particles):
 
 
 def seperations(directory, index, output_file, particle_number):
-    str_index = cef.index2str(index)       
+    str_index = cef.index2str(index)
 
     print(" ")
     print("<-------------->")
     print("READ ROOTDIRECTORY " + str_index + ":", directory)
     print("<-------------->")
-    pf = load(directory)
-      
-    #  Gets the length, time and mass units used in the current simulation    
+    pf = yt.load(directory)
+
+    #  Gets the length, time and mass units used in the current simulation
     lu = pf.parameters['LengthUnits']
     tu = pf.parameters['TimeUnits']
-    mu = pf.parameters['MassUnits']
 
     current_cycle = pf.parameters['InitialCycleNumber']
     current_time = pf.current_time
 
-    #  Adds the whole data as an object called ce. 
-    #  It is an array and you can acces the data by knowing their 
+    #  Adds the whole data as an object called ce.
+    #  It is an array and you can acces the data by knowing their
     #  name through: ce["Dataname"]:
     ce = pf.h.all_data()
 
@@ -92,7 +86,6 @@ def seperations(directory, index, output_file, particle_number):
     yr = 365.35 * 24 * 60 * 60
     current_time = pf.current_time / yr
 
-
     # Find which index corresponds to the primary star (the largest mass).
     particle_masses = ce["ParticleMassMsun"]
     prim_mass = np.max(particle_masses)
@@ -101,7 +94,7 @@ def seperations(directory, index, output_file, particle_number):
             prim_index = i
             break
         else:
-            pass    
+            pass
 
     print("Primary Index: ", prim_index)
 
@@ -124,7 +117,7 @@ def seperations(directory, index, output_file, particle_number):
             sep[pdex[i]] = seperation
             print("Companion " + str(pdex[i]), seperation)
 
-    row = str(current_time * tu) + " " +str (current_cycle)
+    row = str(current_time * tu) + " " + str(current_cycle)
     for i in range(len(sep.items())):
         row = " ".join([row, str(sep.items()[i][1])])
 
@@ -132,9 +125,12 @@ def seperations(directory, index, output_file, particle_number):
 
 
 if __name__ == "__main__":
+    yt.mylog.disabled = True
 
-    (root_dir, exclude_dir, plot_dir, initial_path,
-     final_path_plus_one, output_file_name, particle_number) = read_inlist(sys.argv[1])
+    (root_dir, exclude_dir,
+     plot_dir, initial_path,
+     final_path_plus_one, output_file_name,
+     particle_number) = read_inlist(sys.argv[1])
 
     # Sort the root directory
     root_dir_list = cef.root_sort(root_dir, exclude=exclude_dir)
