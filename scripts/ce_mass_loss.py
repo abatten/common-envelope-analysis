@@ -34,17 +34,17 @@ def read_inlist(ipath):
     config.readfp(open(inlist_name, "r"))
 
     # Read in the config file
-    root_dir = config.get("Common Section", "root_dir")
-    exclude_dir = config.get("Common Section", "exclude_dir")
-    plot_dir = config.get("Common Section", "plot_dir")
-    initial_path = config.getint("Common Section", "initial_path")
-    final_path_plus_one = config.getint("Common Section", "final_path_plus_one")
-    particle_number = config.getint("Common Section", "particle_number")
-    smoothing_length = config.getfloat("Common Section", "smoothing_length")
+    root_dir = config.get("Common", "root_dir")
+    exclude_dir = config.get("Commonn", "exclude_dir")
+    plot_dir = config.get("Common", "plot_dir")
+    initial_path = config.getint("Common", "initial_path")
+    final_path_plus_one = config.getint("Common", "final_path_plus_one")
+    particle_number = config.getint("Common", "particle_number")
+    smoothing_length = config.getfloat("Common", "smoothing_length")
     
-    output_file_name = config.get("Mass Loss Section", "output_file_name")
-    output_file_append = config.getboolean("Mass Loss Section", "output_file_append")
-    use_smoothed_potential = config.getboolean("Mass Loss Section", "use_smoothed_potential")
+    output_file_name = config.get("Mass Loss", "output_file_name")
+    output_file_append = config.getboolean("Mass Loss", "output_file_append")
+    use_smoothed_potential = config.getboolean("Mass Loss", "use_smoothed_potential")
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
