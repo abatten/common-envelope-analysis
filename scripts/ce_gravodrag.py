@@ -32,22 +32,22 @@ def read_inlist(ipath):
     config = ConfigParser.ConfigParser()
     config.readfp(open(inlist_name, "r"))
     #  The directory of all the enzo outputs
-    root_dir = config.get("Common Section", "root_dir") 
+    root_dir = config.get("Common", "root_dir") 
     #  Directories to exclude from reading
-    exclude_dir = config.get("Common Section", "exclude_dir")
+    exclude_dir = config.get("Common", "exclude_dir")
     #  Directory to save the output file
-    plot_dir = config.get("Common Section", "plot_dir") 
+    plot_dir = config.get("Common", "plot_dir") 
     #  Where to begin in the directory list: Usually 0
-    initial_path = config.getint("Common Section", "initial_path")
+    initial_path = config.getint("Common", "initial_path")
     #  Where to end in the directory list + 1 (To work with python arrays)
-    final_path_plus_one = config.getint("Common Section", 
+    final_path_plus_one = config.getint("Common",
                                         "final_path_plus_one")
     #  The number of particles in the simulation
-    particle_number = config.getint("Common Section", "particle_number")
+    particle_number = config.getint("Common", "particle_number")
     #  The name of the output text file
-    output_file_name = config.get("Gravodrag Section", "output_file_name")
+    output_file_name = config.get("Gravodrag", "output_file_name")
     #  Append to the bottom of the text file or create new?
-    output_file_append = config.getboolean("Gravodrag Section", 
+    output_file_append = config.getboolean("Gravodrag", 
                                            "output_file_append") 
     
     print("INLIST FILE: " + inlist_name) 
@@ -210,8 +210,8 @@ def ce_gravodrag(directory, index, outfile):
                                                            "z-velocity"],
                                                            code_coords)
             part_velocity = [ce["particle_velocity_x"][pdex[i]],
-                        ce["particle_velocity_y"][pdex[i]],
-                        ce["particle_velocity_z"][pdex[i]]]
+                             ce["particle_velocity_y"][pdex[i]],
+                             ce["particle_velocity_z"][pdex[i]]]
 
             velocity_in_cell[pdex[i]] = gas_velocity
             comp_velocity[pdex[i]] = part_velocity
