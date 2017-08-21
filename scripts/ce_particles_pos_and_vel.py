@@ -25,13 +25,13 @@ def read_inlist(ipath):
     config.readfp(open(inlist_name, 'r'))
 
     # Read in the config file
-    root_dir = config.get('Common Section', 'root_dir')
-    exclude_dir = config.get('Common Section', 'exclude_dir')
-    plot_dir = config.get('Common Section', 'plot_dir')
-    initial_path = config.getint('Common Section', 'initial_path')
-    final_path_plus_one = config.getint("Common Section", "final_path_plus_one")
-    output_file_name = config.get("Position-Velocity Section", "output_file_name")
-    particle_number = config.getint("Common Section", "particle_number")
+    root_dir = config.get('Common', 'root_dir')
+    exclude_dir = config.get('Common', 'exclude_dir')
+    plot_dir = config.get('Common', 'plot_dir')
+    initial_path = config.getint('Common', 'initial_path')
+    final_path_plus_one = config.getint("Common", "final_path_plus_one")
+    output_file_name = config.get("Position-Velocity", "output_file_name")
+    particle_number = config.getint("Common", "particle_number")
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
