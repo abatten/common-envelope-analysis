@@ -49,6 +49,7 @@ into a single file use `ce_file_merge.py`.
 |Script Name                    |Purpose                                            |
 |---                            |---                                                |
 |`ce_angular_momentum`          |Compute angular momentum components                |
+|`ce_centre_of_mass`            |Find the centre of mass of the system              |
 |`ce_core_seperations`          |Compute the seperation between particles           |
 |`ce_damping_analysis`          |Produce various radial/slice plots from a dump     |
 |`ce_energy_smoothed_potential` |Compute the energy components                      |
@@ -65,6 +66,11 @@ Note: Still under work
 ```
     python ce_angular_momentum.py inlist_ce_analysis.ini
 ```
+#### Inlist Parameters
+
+
+### ce_centre_of_mass.py
+Find the centre of mass in the box
 
 ### ce_core_seperations.py
 Calculates the seperation(s) between the primary and the companion(s).
