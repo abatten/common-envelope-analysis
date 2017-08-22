@@ -67,7 +67,12 @@ Note: Still under work
     python ce_angular_momentum.py inlist_ce_analysis.ini
 ```
 #### Inlist Parameters
+output_file_name (str) : Name of the file
 
+output_file_append (bool) : Append to file if existing
+
+angular_momentum_wrt_com (bool) : Find Angular momentum with respect 
+to centre of mass
 
 ### ce_centre_of_mass.py
 Find the centre of mass in the box
