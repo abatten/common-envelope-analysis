@@ -11,9 +11,10 @@ INLIST=inlist_ce_analysis_multirun.ini
 
 # Range depends on number of directories in path.
 # The FINAL_PATH is equal to the total number of directories.
-FINAL_PATH=36
+INITIAL_PATH=0
+FINAL_PATH=100
 
-for i in $(seq 0 ${FINAL_PATH})
+for i in $(seq ${INITIAL_PATH} ${FINAL_PATH})
 do
     echo $i
     # Create a temp inlist for the python script to read
