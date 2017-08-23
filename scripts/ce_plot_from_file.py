@@ -1,9 +1,8 @@
 from yt.mods import *
-import numpy as np
-import math
-import os
-from matplotlib import pyplot as plt
 from pylab import genfromtxt
+from matplotlib import pyplot as plt
+
+import numpy as np
 import ConfigParser
 import argparse
 
@@ -64,7 +63,7 @@ def energy_plot(txt_file, smoothed, marked):
              label = r"$\phi_{\mathrm{PG}}$")
 
     plt.ylim(-5,1.5)  # Change to make look good
-    plt.xlim(5.5,23)  # Time axis
+    plt.xlim(0,14.3)  # Time axis
     plt.xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
     plt.ylabel(r"$\mathrm{Energy}\ (10^{46}\ \mathrm{ergs})$", fontsize=20)
 
@@ -75,8 +74,9 @@ def energy_plot(txt_file, smoothed, marked):
         outfilename = outfilename + "_marked"
     plt.tight_layout()
     plt.legend(ncol=3, loc='lower left', frameon=False)
-    plt.savefig(plot_loc + outfilename + "_short.png")
-    plt.savefig(plot_loc + outfilename + "_short.svg") 
+    plt.savefig(plot_loc + outfilename + ".png")
+    plt.savefig(plot_loc + outfilename + ".pdf")
+    plt.savefig(plot_loc + outfilename + ".eps")
     plt.show()
 
 def seperation_plot(txt_file, marked):
@@ -178,21 +178,21 @@ def mass_loss_plot(txt_file, marked):
     plt.show()
 
 def angular_momentum_plot(txt_file):
-    mat0 = genfromtxt(txt_file, skip_header=1)
+    data0 = genfromtxt(txt_file, skip_header=1)
     # Find the location of the input file to save plot to.
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
     outfilename = "angular_momentum_test_run"
 
-    plt.plot(mat0[:,0], mat0[:,11],'k', linewidth=3, label = "Total $L$")
-    plt.plot(mat0[:,0], mat0[:,2], 'r--', linewidth=2, label = "Particle $L_x$")
-    plt.plot(mat0[:,0], mat0[:,3], 'r-.', linewidth=1,label = "Particle $L_y$")
-    plt.plot(mat0[:,0], mat0[:,4], 'r:', linewidth=2, label = "Particle $L_z$")
-    plt.plot(mat0[:,0], mat0[:,5], 'b--', linewidth=2, label = "Gas $L_x$")
-    plt.plot(mat0[:,0], mat0[:,6], 'b-.', linewidth=1, label = "Gas $L_y$")
-    plt.plot(mat0[:,0], mat0[:,7], 'b:', linewidth=2, label = "Gas $L_z$")
-    #plt.plot(mat0[:,0], mat0[:,8], label = "Total $L_x$")
-    #plt.plot(mat0[:,0], mat0[:,9], label = "Total $L_y$")
-    #plt.plot(mat0[:,0], mat0[:,10], label = "Total $L_z$")
+    plt.plot(data0[:,0], data0[:,11],'k', linewidth=3, label = "Total $L$")
+    plt.plot(data0[:,0], data0[:,2], 'r--', linewidth=2, label = "Particle $L_x$")
+    plt.plot(data0[:,0], data0[:,3], 'r-.', linewidth=1,label = "Particle $L_y$")
+    plt.plot(data0[:,0], data0[:,4], 'r:', linewidth=2, label = "Particle $L_z$")
+    plt.plot(data0[:,0], data0[:,5], 'b--', linewidth=2, label = "Gas $L_x$")
+    plt.plot(data0[:,0], data0[:,6], 'b-.', linewidth=1, label = "Gas $L_y$")
+    plt.plot(data0[:,0], data0[:,7], 'b:', linewidth=2, label = "Gas $L_z$")
+    #plt.plot(data0[:,0], data0[:,8], label = "Total $L_x$")
+    #plt.plot(data0[:,0], data0[:,9], label = "Total $L_y$")
+    #plt.plot(data0[:,0], data0[:,10], label = "Total $L_z$")
 
     #plt.ylim(-0.3e47,1e47)
     plt.xlabel('$\mathrm{Time (yr)}$', fontsize=16)
@@ -202,7 +202,7 @@ def angular_momentum_plot(txt_file):
     plt.show()
 
 def position_and_velocities_plot(txt_file):
-    mat0 = genfromtxt(txt_file, skip_header=1)
+    data0 = genfromtxt(txt_file, skip_header=1)
 
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
     outfilename = "positions_and_velocities"
@@ -212,7 +212,7 @@ def position_and_velocities_plot(txt_file):
     # Each particle has 6 components x,y,z & vx,vy,vz
     # Plus the first two columns of time and cycle.
     # Hence there is 6n + 2 columns where n is the number of particles.
-    num_particles = (len(mat0[0,:]) - 2) / 6
+    num_particles = (len(data0[0,:]) - 2) / 6
 
     fig, axes = plt.subplots(2, num_particles, sharex='col', sharey='row')
 
@@ -220,19 +220,19 @@ def position_and_velocities_plot(txt_file):
     for row in axes:
         for index in range(num_particles): 
             if irow == 0:
-                mat0[:, (index+1)*6] = ((mat0[:, (index + 1) * 6] -
-                                         mat0[0, (index + 1 )* 6]) / AU)
+                data0[:, (index+1)*6] = ((data0[:, (index + 1) * 6] -
+                                         data0[0, (index + 1 )* 6]) / AU)
                 row[0].set_ylabel("$\mathrm{Z-displacement\ (AU)}$")
-                #row[0].set_yticks(np.arange(mat0[10,6], 1.5*np.max(mat0[:, (index+1)*6])))
+                #row[0].set_yticks(np.arange(data0[10,6], 1.5*np.max(data0[:, (index+1)*6])))
 
             elif irow == 1:
-                mat0[:, (index+1)*6+irow] = mat0[:, (index+1)*6+irow] / km
+                data0[:, (index+1)*6+irow] = data0[:, (index+1)*6+irow] / km
                 row[0].set_ylabel("$\mathrm{Z-Velocity\ (km/s)}$")
             
-            row[index].plot(mat0[:,0], mat0[:,(index+1)*6 + irow])
+            row[index].plot(data0[:,0], data0[:,(index+1)*6 + irow])
             
             row[index].set_xlabel("$\mathrm{Time\ (yr)}$")
-            row[index].set_xticks(np.arange(mat0[0,0], mat0[-1,0], 3))
+            row[index].set_xticks(np.arange(data0[0,0], data0[-1,0], 3))
 #            row[0].set_ylabel("$\mathrm{Z-displacement\ (cm)}$")
 #            row[0].set_ylabel("$\mathrm{Z-Velocity\ (km/s)}$")
         irow+=1
@@ -241,21 +241,60 @@ def position_and_velocities_plot(txt_file):
     plt.savefig(plot_dir + outfilename + ".png")
     plt.show()
 
-
 def gravodrag_plot(txt_file):
-    mat0 = genfromtxt(txt_file, skip_header=1)
+    data0 = genfromtxt(txt_file, skip_header=1)
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
     outfilename = "gravodrag_plot"
 
-    plt.plot(mat0[:,0], mat0[:,3],'k', linewidth=1, label = "Gravodrag")
-    #plt.plot(mat0[:,0], mat0[:,15],'k', linewidth=1, label = "Gravodrag")
+    plt.plot(data0[:,0], data0[:,2],'b', linewidth=1, label = "Outer Particle")
+    #plt.plot(data0[:,0], data0[:,15],'g', linewidth=1, label = "Inner Particle")
 
-
-    #plt.ylim(-0.3e47,1e47)
-    plt.xlabel('$\mathrm{Time (yr)}$', fontsize=16)
-    plt.ylabel("Gravodrag", fontsize=16)
-#    plt.legend(loc='best', frameon=False); 
+    plt.ylim(1e31,2.5e33)
+    plt.xlim(0,14.5)
+    plt.xlabel('$\mathrm{Time (yr)}$', fontsize=20)
+    plt.ylabel(r"$\mathrm{Gravodrag\ (dynes)}$", fontsize=20)
+    plt.legend(loc='best', frameon=False)
+    plt.tight_layout()
     plt.savefig(plot_loc + outfilename + ".png")
+    plt.show()
+
+
+def centre_of_mass_plot(txt_file):
+    data0 = genfromtxt(txt_file, skip_header=1)
+    data1 = genfromtxt("/disks/ceres/makemake/acomp/abatten/masters/jstaff/sim2/plots/centre_of_mass.txt", skip_header=1)
+    plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
+    outfilename1 = "centre_of_mass_xy_plot"
+    outfilename2 = "centre_of_mass_time_plot"
+
+    #plt.plot(data0[:, 0], data0[:, 2] - 0.5, "b:", label="COMx")
+    #plt.plot(data0[:, 0], data0[:, 3] - 0.5, "r:", label="COMy")
+    #plt.plot(data0[:, 0], data0[:, 4] - 0.5, "g:", label="COMz")
+    plt.title("Centre of Mass")
+    plt.plot(data0[:,2]-0.5, data0[:,3]-0.5, "b", label="After Reduced Mass")
+    plt.plot(data0[0,2]-0.5, data0[0,3]-0.5, "bp")
+    plt.plot(data0[-1,2]-0.5, data0[-1,3]-0.5, "b+")
+    plt.plot(data1[:57,2]-0.5, data1[:57,3]-0.5, "g", label="Before Reduced Mass")
+    plt.plot(data1[0,2]-0.5, data1[0,3]-0.5, "gp")
+    plt.plot(data1[56,2]-0.5, data1[56,3]-0.5, "g+")
+    plt.legend(loc="best", frameon=False)
+    plt.xlim(-0.3,-0.05)
+    plt.ylim(-0.16,-0.05)
+    plt.xlabel("X-cood")
+    plt.ylabel("Y-Cood")
+    plt.savefig(plot_loc + outfilename1 + ".png")
+    plt.show()
+
+    plt.plot(data0[:, 0], data0[:, 4] - 0.5, "g:", linewidth=2, label="COMz-After")
+    plt.plot(data0[:, 0], data0[:, 3] - 0.5, "r:", linewidth=2, label="COMy-After")
+    plt.plot(data0[:, 0], data0[:, 2] - 0.5, "b:", linewidth=2, label="COMx-After")
+    plt.plot(data1[:57, 0], data1[:57, 4] - 0.5, "g", linewidth=2, label="COMz-Before")
+    plt.plot(data1[:57, 0], data1[:57, 3] - 0.5, "r", linewidth=2, label="COMy-Before")
+    plt.plot(data1[:57, 0], data1[:57, 2] - 0.5, "b", linewidth=2, label="COMx-Before")
+    
+    plt.ylabel("Coordinate of Centre of Mass")
+    plt.xlabel(r"$\mathrm{Time\ (yr)}$")
+    plt.legend(loc="best", frameon=False)
+    plt.savefig(plot_loc +outfilename2 + ".png")
     plt.show()
 
 
@@ -290,6 +329,7 @@ if __name__ == "__main__":
                         of all the particles", action="store_true")
     parser.add_argument("--gravodrag",
                         help="Create plot of gravitational drag", action="store_true")
+    parser.add_argument("--centreofmass", help="Create plot of center of mass", action="store_true")
     parser.add_argument("txts", help="The text files to read.")
 
 
@@ -316,3 +356,5 @@ if __name__ == "__main__":
 
     if args.gravodrag:
         gravodrag_plot(args.txts)
+    if args.centreofmass:
+        centre_of_mass_plot(args.txts)

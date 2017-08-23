@@ -25,16 +25,16 @@ def read_inlist(ipath):
     cfig.readfp(open(inlist_name, 'r'))
    
     # Read in the config file
-    root_dir = cfig.get('Common Section', 'root_dir')
-    exclude_dir = cfig.get('Common Section', 'exclude_dir')
-    plot_dir = cfig.get('Common Section', 'plot_dir')
-    initial_path = cfig.getint('Common Section', 'initial_path')
-    final_path_plus_one = cfig.getint('Common Section', 'final_path_plus_one')
-    output_file_name = cfig.get('Angular Momentum Section', 'output_file_name')
-    output_file_append = cfig.getboolean('Angular Momentum Section', 'output_file_append')
-    angular_momentum_wrt_com = cfig.getboolean("Angular Momentum Section", "angular_momentum_wrt_com")
-    smoothing_length = cfig.getfloat('Common Section', 'smoothing_length')
-    particle_number = cfig.getint('Common Section', 'particle_number')
+    root_dir = cfig.get("Common", "root_dir")
+    exclude_dir = cfig.get("Common", "exclude_dir")
+    plot_dir = cfig.get("Common", "plot_dir")
+    initial_path = cfig.getint("Common", "initial_path")
+    final_path_plus_one = cfig.getint("Common", "final_path_plus_one")
+    output_file_name = cfig.get("Angular Momentum", "output_file_name")
+    output_file_append = cfig.getboolean("Angular Momentum", "output_file_append")
+    angular_momentum_wrt_com = cfig.getboolean("Angular Momentum", "angular_momentum_wrt_com")
+    smoothing_length = cfig.getfloat("Common", "smoothing_length")
+    particle_number = cfig.getint("Common", "particle_number")
 
     print("INLIST FILE: " + inlist_name)
     print("ROOT DIRECTORY: " + str(root_dir))
@@ -60,15 +60,15 @@ def BoundMinDensity(field, data):
     mu = data.pf.parameters["MassUnits"]
 
     #  Step 1: Thermal Energy of Gas
-    Etherm_gas = data['ThermalEnergy'] * data['CellMass']
+    Etherm_gas = data["ThermalEnergy"] * data["CellMass"]
 
     #  Step 2: Kinetic Energy of the Gas
-    Ekin_gas = data['KineticEnergy'] * data['CellVolume']
+    Ekin_gas = data["KineticEnergy"] * data["CellVolume"]
 
     #  Step 3: Potential Energy of the Gas
     #  Potential energy is computed only if the potential field is available
-    if (data.pf.parameters['SelfGravity'] == 1):
-        Epot_gas = data['Grav_Potential'] * (lu / tu)**2.0 * data['CellMass']
+    if (data.pf.parameters["SelfGravity"] == 1):
+        Epot_gas = data["Grav_Potential"] * (lu / tu)**2.0 * data['CellMass']
     else:
         Epot_gas = 0.0
 
