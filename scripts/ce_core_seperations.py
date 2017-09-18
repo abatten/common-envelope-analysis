@@ -83,7 +83,7 @@ def seperations(directory, index, output_file, particle_number):
     else:
         current_cycle = pf.parameters['InitialCycleNumber']
 
-    yr = 365.35 * 24 * 60 * 60
+    yr = 365.25 * 24 * 60 * 60
     current_time = pf.current_time / yr
 
     # Find which index corresponds to the primary star (the largest mass).
