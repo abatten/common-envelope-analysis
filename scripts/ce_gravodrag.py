@@ -102,7 +102,7 @@ def open_file(file_name, append, particle_number):
             comp_vel_dict[str(i+1)] = ("%s_%s_%s" %
                                       ("Particle", str(i+1),"Vel"))
 
-            header = ",".join([header, gravodrag_dict[str(i+1)], 
+            header = ", ".join([header, gravodrag_dict[str(i+1)], 
                                 density_dict[str(i+1)], 
                                 accr_rad_dict[str(i+1)],
                                 str(sound_speed_dict[str(i+1)]) + " (cm/s)", 
