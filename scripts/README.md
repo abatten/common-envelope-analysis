@@ -44,7 +44,6 @@ Then launch `multirun` parsing the python script as the first argument
 This will create an output file for every data dump. To merge the outputs
 into a single file use `ce_file_merge.py`.
 
-
 ## Analysis Scripts:
 |Script Name                    |Purpose                                            |
 |---                            |---                                                |
@@ -54,10 +53,13 @@ into a single file use `ce_file_merge.py`.
 |`ce_damping_analysis`          |Produce various radial/slice plots from a dump     |
 |`ce_energy_smoothed_potential` |Compute the energy components                      |
 |`ce_file_merge`                |Merge files together after `multirun`              |
+|`ce_gas_outflow`               |Find regions where gas is outflowing               |
 |`ce_gravodrag`                 |Compute the gravodrag on the companions            |
 |`ce_mass_loss`                 |Compute bound/unbound mass of the envelope         |
+|`ce_orbits`                    |Find the orbit of the particles from velocity      |
 |`ce_particle_pos_and_vel`      |Find the positions and velocities of the particles |
 |`ce_plot_from_file`            |Read a text file of data and produce various plots |
+|`ce_vel_vs_kep.py              |Compare particle velocities to keplerian velocity  |
 
 ### ce_angular_momentum.py
 Calculates the angular momentum components of the companions.
@@ -118,6 +120,14 @@ also automatically excludeds cells with potential energy spikes due to AMR.
     python ce_energy_smoothed_potential.py inlist_ce_analysis.ini
 ```
 
+### ce_mass_loss.py
+Calculates the mass lost from the system through mass leaving the grid.
+
+```
+    python ce_mass_loss.py inlist_ce_analysis.ini
+```
+
+
 ### ce_plot_from_file.py
 This script is for ploting the data created by the other analysis scripts.
 It has options for plotting the energies, seperation, massloss and thermal.
@@ -130,6 +140,9 @@ an argument.
 --angularmomentum: Create an angular momentum plot  
 --thermal: Create a thermal energy plot  
 --massloss: Create a mass loss and mass loss rate plot  
+--posvel: Create a positions and velocities plot
+--gravodrag: Create plot of Gravitational drag
+
 
 #### Optionals
 --smoothed: Find NaN's in energy file and replace them.  
@@ -139,3 +152,9 @@ An example of this script being used to create a smooth, marked energy plot.
 ```
     python ce_plot_from_file.py /path/to/file/ --energy --smoothed --marked 1 2 3
 ```
+
+### ce_vel_vs_kep.py
+Calculates the velocities and seperations of the particles in the simulations 
+and compares these velocities to the Kelperian velocity at that seperation.
+
+Currently Under Work
