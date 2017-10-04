@@ -144,3 +144,26 @@ def root_sort(root_dir, exclude=[]):
     
     return root_dir_list
 
+def primary_coords(ce, lu=1):
+    prim_index = primary_index(ce)
+    primary_coords = [ce["particle_position_x"][prim_index] * lu,
+                      ce["particle_position_y"][prim_index] * lu,
+                      ce["particle_position_z"][prim_index] * lu]
+
+    return primary_coords
+
+
+def primary_index(ce):
+    """
+    Finds the index of the primary core assuming it has the largest mass.
+    """
+    particle_masses = ce["ParticleMassMsun"]
+    primary_mass = np.max(particle_masses)
+    for i in range(len(particle_masses)):
+        if particle_masses[i] == primary_mass:
+            primary_index = i
+            break
+        else:
+            pass
+
+    return primary_index
