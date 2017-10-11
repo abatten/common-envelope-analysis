@@ -1,10 +1,15 @@
 from yt.mods import *
 from pylab import genfromtxt
 from matplotlib import pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+
 
 import numpy as np
 import ConfigParser
 import argparse
+
+
 
 import cemodules.cefunctions as cef
 
@@ -63,7 +68,7 @@ def energy_plot(txt_file, smoothed, marked):
              label = r"$\phi_{\mathrm{PG}}$")
 
     plt.ylim(-5,1.5)  # Change to make look good
-    plt.xlim(0,14.3)  # Time axis
+    plt.xlim(5.6,23.5)  # Time axis
     plt.xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
     plt.ylabel(r"$\mathrm{Energy}\ (10^{46}\ \mathrm{ergs})$", fontsize=20)
 
@@ -85,12 +90,16 @@ def seperation_plot(txt_file, marked):
     # Find the location of the input file to save plot to.
     plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
 
-    outfilename = "seperations_jstaff_sim2_part2"
+    outfilename = "seperations_plot"
     yr = 365.25 * 24 * 60 * 60
     Rsun = 6.957e10 #cm
 
+    colours = ["b", "r", "g"]
+
+    fig, ax = plt.subplots(figsize=[8,6])
+
     for i in range(len(data[0,:])-2): # Skip first two columns.
-        plt.plot(data[:,0], data[:,i+2]/Rsun, linewidth=2);
+        ax.plot(data[:,0], data[:,i+2]/Rsun, colours[i], linewidth=2);
 
     if marked:
         for i in range(len(marked)):
@@ -98,11 +107,30 @@ def seperation_plot(txt_file, marked):
 
         outfilename = outfilename + "_marked"
 
-#    plt.ylim(0,500)
-    plt.xlabel('Time (yr)', fontsize=16)
-    plt.ylabel("Seperation " r'($\mathrm{R}_\odot$)', fontsize=16)
+    #plt.ylim(0,2600)
+    plt.xlabel(r"$\mathrm{Time\ (yr)}$", fontsize=20)
+    plt.ylabel(r"$\mathrm{Seperation}\ (\mathrm{R}_\odot$)", fontsize=20)
     #plt.legend(bbox_to_anchor=(0.7, 0.65),loc=9, frameon=False)
+    
+#    axins = zoomed_inset_axes(ax, 6, loc=4)
+#    axins.semilogy(data[:,0], data[:,2]/Rsun, colours[0], linewidth=1)
+
+#    x1,x2,y1,y2 = 0.7, 1.5, 0, 100
+
+#    axins.set_xlim(x1, x2)
+#    axins.set_ylim(y1, y2)
+
+#    plt.xticks(visible=False)
+#    plt.yticks(visible=False)
+
+    # draw a bbox of the region of the inset axes in the parent axes and
+    # connecting lines between the bbox and the inset axes area
+#    mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+
+#    plt.draw()
     plt.savefig(plot_loc + outfilename + ".png")
+    plt.savefig(plot_loc + outfilename + ".eps")
+    plt.savefig(plot_loc + outfilename + ".pdf")
     plt.show()
 
 def thermal_plot(txt_file, marked):
@@ -175,6 +203,8 @@ def mass_loss_plot(txt_file, marked):
     ax1.legend(h1+h2, l1+l2, loc='best', prop={'size':18}, frameon=False)
     plt.tight_layout()
     plt.savefig(plot_loc + outfilename + ".png")
+    plt.savefig(plot_loc + outfilename + ".pdf")
+    plt.savefig(plot_loc + outfilename + ".eps")
     plt.show()
 
 def angular_momentum_plot(txt_file):
@@ -298,6 +328,74 @@ def centre_of_mass_plot(txt_file):
     plt.show()
 
 
+def gas_direction_plot(txt_file):
+    data = genfromtxt(txt_file, skip_header=1)
+    plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
+    outfile_name = "gas_direction_plot_with_Particles" 
+
+    km = 10**5
+
+    plt.plot(data[:, 0], data[:, 2] / km, "k:", linewidth=2, label=r"$\mathrm{Inner}\ |v_g|$")
+    plt.plot(data[:, 0], data[:, 3] / km, "b:", label=r"$\mathrm{Inner}\ v_{\parallel}$")
+    plt.plot(data[:, 0], data[:, 4] / km, "r:", label=r"$\mathrm{Inner}\ v_{\bot}$")
+    #plt.plot(data[:, 0], data[:, 7] / km , "g:", label=r"$\mathrm{Inner}\ |v_p|}$")
+    plt.plot(data[:, 0], data[:, 8] / km, "k", linewidth=2, label=r"$\mathrm{Outer}\ |v_g|$") 
+    plt.plot(data[:, 0], data[:, 9] / km, "b", label=r"$\mathrm{Outer}\ v_{\parallel}$") 
+    plt.plot(data[:, 0], data[:, 10] / km, "r", label=r"$\mathrm{Outer}\ v_{\bot}$") 
+    plt.plot(data[:, 0], data[:, 13] / km, "g", linewidth=2, label=r"$\mathrm{Outer}\ |v_p|}$")
+
+    plt.ylabel(r"$\mathrm{Velocity\ \left(km\ s^{-1}\right)}$", fontsize=20)
+    plt.xlabel(r"$\mathrm{Time\ \left( yr \right)}$", fontsize=20)
+    plt.xlim(0,14.3)
+    plt.legend(loc="best", frameon=False)
+    plt.savefig(plot_loc + outfile_name + ".png")
+    plt.savefig(plot_loc + outfile_name + ".pdf")
+    plt.savefig(plot_loc + outfile_name + ".eps")
+    plt.show()
+
+
+def orbit_params_plot(txt_file):
+    data = genfromtxt(txt_file, skip_header=1)
+    plot_loc = txt_file[: - len(txt_file.split("/")[-1])]
+    outfile_name = "orbital_parameters_plot"
+
+    f, axarr = plt.subplots(2, sharex=True)
+    
+    
+    
+    #axarr[0].plot(x, y)
+    #axarr[0].set_title('Sharing X axis')
+    #axarr[1].scatter(x, y)
+
+    #ax1 = plt.subplot(111)
+    #ax2 = plt.subplot(111)
+
+    semi_major_scale = 10**14
+   
+    axarr[0].plot(data[:, 0], data[:, 2] / semi_major_scale, "b", label=r"$\mathrm{Inner\ Semi-Major\ Axis}$")
+    axarr[0].plot(data[:, 0], data[:, 11] / semi_major_scale, "r", label=r"$\mathrm{Outer\ Semi-Major\ Axis}$")
+
+    axarr[1].plot(data[:,0], data[:,4], "b", label=r"$\mathrm{Inner\ Eccentricity}$")
+    axarr[1].plot(data[:,0], data[:,13], "r", label=r"$\mathrm{Outer\ Eccentricity}$")
+
+    axarr[1].set_xlabel(r"$\mathrm{Time}\ (\mathrm{yr})$", fontsize=20)
+    axarr[0].set_ylabel(r"$\mathrm{a}\ (\mathrm{10^{14}\ cm})$", fontsize=20)
+    axarr[1].set_ylabel(r"$\mathrm{e}$", fontsize=20)
+    axarr[0].set_ylim(1/1000,1)
+    axarr[0].set_xlim(0,14.3)
+    axarr[1].set_xlim(0,14.3)
+
+    f.subplots_adjust(hspace=0)
+    plt.setp([a.get_xticklabels() for a in f.axes[:-1]], visible=False)
+
+    h1, l1 = axarr[0].get_legend_handles_labels()
+    h2, l2 = axarr[1].get_legend_handles_labels()
+
+    axarr[0].legend(h1, l1, loc='best', prop={'size':14}, frameon=False)
+    axarr[1].legend(h2, l2, loc='best', prop={'size':14}, frameon=False)
+
+    plt.show()
+
 if __name__ == "__main__":
 # Command line arguments
     parser = argparse.ArgumentParser()
@@ -329,6 +427,10 @@ if __name__ == "__main__":
                         of all the particles", action="store_true")
     parser.add_argument("--gravodrag",
                         help="Create plot of gravitational drag", action="store_true")
+    parser.add_argument("--gasdir", 
+                        help="Creates plot of gas direction", action="store_true")
+    parser.add_argument("--orbitparams",
+                        help="Creates plot of orbital parameters", action="store_true")
     parser.add_argument("--centreofmass", help="Create plot of center of mass", action="store_true")
     parser.add_argument("txts", help="The text files to read.")
 
@@ -356,5 +458,12 @@ if __name__ == "__main__":
 
     if args.gravodrag:
         gravodrag_plot(args.txts)
+
     if args.centreofmass:
         centre_of_mass_plot(args.txts)
+
+    if args.gasdir:
+        gas_direction_plot(args.txts)
+
+    if args.orbitparams:
+        orbit_params_plot(args.txts)
