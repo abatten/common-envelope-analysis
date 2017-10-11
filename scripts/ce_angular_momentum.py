@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function
 
 from yt.mods import *
 
@@ -102,7 +102,7 @@ def BoundMinDensity(field, data):
                                                     smallest_cell_length)
 
         Epot_part_to_gas = 0
-        for i in range(len(ce['particle_index']):
+        for i in range(len(ce['particle_index'])):
             Epot_part_to_gas = Epot_part_to_gas + Epot_particle[i]
 
     else:
